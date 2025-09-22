@@ -1,0 +1,52 @@
+﻿using Inventory.Mostafa.Domain.Entities;
+using Inventory.Mostafa.Domain.Entities.CustodayTables;
+using Inventory.Mostafa.Domain.Entities.Identity;
+using Inventory.Mostafa.Domain.Entities.Opening;
+using Inventory.Mostafa.Domain.Entities.Order;
+using Inventory.Mostafa.Domain.Entities.Store;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using NHibernate.Criterion;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Inventory.Mostafa.Infrastructure.Data.Context
+{
+    public class InventoryDbContext:IdentityDbContext<AppUser,IdentityRole<int>,int>
+    {
+        public InventoryDbContext(DbContextOptions<InventoryDbContext> options):base(options)
+        {
+            
+        }
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+            base.OnModelCreating(builder);
+        }
+
+        public DbSet<Items> Items { get; set; }
+        public DbSet<Unit> Units { get; set; }
+        public DbSet<Recipients> Recipients { get; set; }
+        //Order
+        public DbSet<Orders> Orders { get; set; }
+        public DbSet<OrderItems> OrderItems { get; set; }
+        public DbSet<ItemSerialNumber> ItemSerialNumbers { get; set; }
+        //Opening Stock
+        public DbSet<OpeningSerialNumber> OpeningSerialNumbers { get; set; }
+        public DbSet<OpeningStock> OpeningStocks { get; set; }
+        //Store
+        public DbSet<StoreRelease> StoreReleases { get; set; }
+        public DbSet<StoreReleaseItem> StoreReleaseItems { get; set; }
+        public DbSet<ReleaseItemSerialNumber> ReleaseItemSerialNumbers { get; set; }
+        public DbSet<StockTransaction> StockTransactions { get; set; }
+        //Custoday
+        public DbSet<Custoday> Custodays { get; set; }
+        public DbSet<CustodyItem> CustodyItems { get; set; }
+
+    }
+}
