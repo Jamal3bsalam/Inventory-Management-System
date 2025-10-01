@@ -1,4 +1,5 @@
-﻿using Inventory.Mostafa.Domain.Entities.Order;
+﻿using Inventory.Mostafa.Domain.Entities.AssetsReturns;
+using Inventory.Mostafa.Domain.Entities.Order;
 using Inventory.Mostafa.Domain.Shared;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,7 @@ namespace Inventory.Mostafa.Domain.Entities.Store
         public int? OrderItemId { get; set; }
         public OrderItems? OrderItem { get; set; }
         public ICollection<ReleaseItemSerialNumber>? SerialNumbers { get; set; }
+        public ICollection<Returns>? Returns { get; set; }
 
         // Navigation
         public StoreRelease? StoreRelease { get; set; }

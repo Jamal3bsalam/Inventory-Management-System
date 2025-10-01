@@ -5,7 +5,7 @@
 namespace Inventory.Mostafa.Infrastructure.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class UpdateCustodayTableAndRelationWithRecipint : Migration
+    public partial class UpdateCustodayTableAndRelationWithRecipint : Microsoft.EntityFrameworkCore.Migrations.Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

@@ -54,6 +54,9 @@ namespace Inventory.Mostafa.Infrastructure.Service.Files
                 "StoreRelease" => "StoreRelease",
                 "UnitExpense" => "UnitExpense",
                 "CustodayRecord" => "CustodayRecord",
+                "Returns" => "Returns",
+                "WriteOff" => "WriteOff",
+                "CustodayTransfers" => "CustodayTransfers",
                 _ => "General"
             };
         }

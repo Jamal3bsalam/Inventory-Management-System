@@ -5,7 +5,7 @@
 namespace Inventory.Mostafa.Infrastructure.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class UpdateOrderItemsTable : Migration
+    public partial class UpdateOrderItemsTable : Microsoft.EntityFrameworkCore.Migrations.Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

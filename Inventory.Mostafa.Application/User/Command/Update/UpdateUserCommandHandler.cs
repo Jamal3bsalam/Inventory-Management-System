@@ -22,8 +22,10 @@ namespace Inventory.Mostafa.Application.User.Command.Update
         }
         public async Task<Result<UserDto>> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
         {
-            if (request.Id == null || string.IsNullOrEmpty(request.UserName) || string.IsNullOrEmpty(request.Roles.ToString())) return Result<UserDto>.Failure("Please fill all required fields correctly");
-            if (await CheckUserNameExist(request.UserName)) return Result<UserDto>.Failure("UserName Already Exist");
+            if (request.Id == null) return Result<UserDto>.Failure("Please fill all required fields correctly");
+
+            if (!string.IsNullOrEmpty(request.UserName))
+                if (await CheckUserNameExist(request.UserName)) return Result<UserDto>.Failure("UserName Already Exist");
 
             var user = await _userManager.FindByIdAsync(request.Id.ToString());
             if (user == null) return Result<UserDto>.Failure("User NotFound");

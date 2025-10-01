@@ -1,12 +1,16 @@
 ﻿using Inventory.Mostafa.Application.Contract.Order;
 using Inventory.Mostafa.Application.Contract.Store;
+using Inventory.Mostafa.Application.Contract.UnitExp;
+using Inventory.Mostafa.Application.Contract.Units;
 using Inventory.Mostafa.Application.Order.Command.Add;
 using Inventory.Mostafa.Application.Order.Query.AllOrders;
 using Inventory.Mostafa.Application.Store.Command.Add;
 using Inventory.Mostafa.Application.Store.Command.Add.File;
 using Inventory.Mostafa.Application.Store.Command.Delete;
+using Inventory.Mostafa.Application.Store.Command.Update;
 using Inventory.Mostafa.Application.Store.Command.Update.File;
 using Inventory.Mostafa.Application.Store.Query.AllStoreRelease;
+using Inventory.Mostafa.Application.UnitExp.Command.Update;
 using Inventory.Mostafa.Domain.Entities.Store;
 using Inventory.Mostafa.Domain.Shared;
 using Inventory.Mostafa.Domain.Specification;
@@ -27,8 +31,7 @@ namespace Inventory.Mostafa.Pl.Controllers
     public class StoreReleaseController : ControllerBase
     {
         private readonly IMediator _mediator;
-
-        public StoreReleaseController(IMediator mediator)
+        public StoreReleaseController(IMediator mediator,IConfiguration configuration)
         {
             _mediator = mediator;
         }
@@ -40,7 +43,7 @@ namespace Inventory.Mostafa.Pl.Controllers
         {
             var getAllStoreReleasesQuery = parameter.Adapt<StoreReleasesQuery>();
             var Releases = await _mediator.Send(getAllStoreReleasesQuery);
-            if (Releases == null) return BadRequest(new ErrorResponse(400, "Faild To Retrive All Orders"));
+            if (Releases == null) return BadRequest(new ErrorResponse(400, "Faild To Retrive All Store Releases"));
             return Ok(new ApiResponse<Pagination<IEnumerable<StoreReleaseDto>>>(true, 200, "StoreRelease Retrived Successfully.", Releases.Data));
         }
 
@@ -88,5 +91,19 @@ namespace Inventory.Mostafa.Pl.Controllers
             
             return Ok(new ApiResponse<string>(true, 200, result.Message, result.Data));
         }
+
+        [HttpPut("{id}")]
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = "Admin")]
+        public async Task<ActionResult<ApiResponse<StoreReleaseDto>>> UpdateStorReleases(UpdateStoreReleaseDto updateStoreRelease, int id)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var storeCommand = updateStoreRelease.Adapt<UpdateStoreReleaseCommand>();
+            storeCommand.storeReleaseId = id;
+            var result = await _mediator.Send(storeCommand);
+
+            return Ok(new ApiResponse<StoreReleaseDto>(true, 200, result.Message, result.Data));
+        }
+
     }
 }

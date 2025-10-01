@@ -62,7 +62,7 @@ namespace Inventory.Mostafa.Application.Store.Command.Add
                 RecipientsId = request.ReceiverId,
                 DocumentNumber = request.DocumentNumber,
                 DocumentPath = $"\\Files\\StoreRelease\\{request.DocumentPath}",
-                ReleaseDate = DateTime.UtcNow,
+                ReleaseDate = request.ReleaseDate,
                 StoreReleaseItems = new List<StoreReleaseItem>()
             };
 
@@ -95,6 +95,15 @@ namespace Inventory.Mostafa.Application.Store.Command.Add
                 var oSpec = new OrderSpec(item.OrderId);
                 var order = await _unitOfWork.Repository<Orders, int>().GetWithSpecAsync(oSpec);
                 var orderItems = order?.OrderItems?.First(OI => OI.Id == item.OrderItemId);
+
+                foreach (var serial in item.SerialNumbers) 
+                {
+                    var storeSerial = orderItems.SerialNumbers.FirstOrDefault(s => s.SerialNumber == serial);
+                    if (storeSerial != null)
+                    {
+                        _unitOfWork.Repository<ItemSerialNumber, int>().Delete(storeSerial);
+                    }
+                }
 
                 var storeReleaseItem = new StoreReleaseItem()
                     {
@@ -166,7 +175,7 @@ namespace Inventory.Mostafa.Application.Store.Command.Add
                     OrderId  = i.OrderId,
                     OrderNumber = storeItem.Order?.OrderNumber,
                     OrderType = i.Order?.OrderType, 
-                    OrderItemId = i.ItemId,
+                    OrderItemId = i.OrderItemId,
                     Quantity = i.Quantity,
                     SerialNumbers = i.SerialNumbers?.Select(sn => sn.SerialNumber).ToList()
                 }).ToList()

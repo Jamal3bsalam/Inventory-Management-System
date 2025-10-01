@@ -29,7 +29,8 @@ namespace Inventory.Mostafa.Application.UnitExp.Query.AllUnitExpense
         }
         public async Task<Result<Pagination<IEnumerable<UnitExpensDto>>>> Handle(UnitsExpensesQuery request, CancellationToken cancellationToken)
         {
-            var parameter = request.Adapt<StoreReleaseSpecParameter>();
+            var parameter = request.Adapt<UnitExpenseParameter>();
+            parameter.Search = request.Search;
             var spec = request.UnitId == null ? new UnitExpenseSpec(parameter) : new UnitExpenseSpec(parameter, true);
             var count = request.UnitId == null ? new UnitExpenseCount(parameter) : new UnitExpenseCount(parameter, true);
 
@@ -38,7 +39,7 @@ namespace Inventory.Mostafa.Application.UnitExp.Query.AllUnitExpense
 
 
 
-            if (unitExpenses == null) return Result<Pagination<IEnumerable<UnitExpensDto>>>.Failure("Faild To Retrived All Store Releases.");
+            if (unitExpenses == null) return Result<Pagination<IEnumerable<UnitExpensDto>>>.Failure("Faild To Retrived All Unit Expense.");
 
             var unitExpenseDtos = unitExpenses.Select(S => new UnitExpensDto()
             {
@@ -58,7 +59,7 @@ namespace Inventory.Mostafa.Application.UnitExp.Query.AllUnitExpense
             });
             var pagintion = new Pagination<IEnumerable<UnitExpensDto>>(parameter.PageSize, parameter.PageIndex, counts, unitExpenseDtos);
 
-            return Result<Pagination<IEnumerable<UnitExpensDto>>>.Success(pagintion, "All Store Release Retrived Successfully.");
+            return Result<Pagination<IEnumerable<UnitExpensDto>>>.Success(pagintion, "All Unit Expense Retrived Successfully.");
         }
     }
 }

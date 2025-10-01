@@ -7,9 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Inventory.Mostafa.Application.CustodayRec.Query
+namespace Inventory.Mostafa.Application.CustodayRec.Query.All
 {
-    public class AllRecordQuery:IRequest<Result<IEnumerable<RecordDto>>>
+    public class AllRecordQuery : IRequest<Result<IEnumerable<RecordDto>>>
     {
     }
 }

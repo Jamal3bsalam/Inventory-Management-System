@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Inventory.Mostafa.Infrastructure.Data.Migraitons
 {
     /// <inheritdoc />
-    public partial class AddCustTodayRecordTable : Migration
+    public partial class AddCustTodayRecordTable : Microsoft.EntityFrameworkCore.Migrations.Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

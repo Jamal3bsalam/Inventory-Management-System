@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Inventory.Mostafa.Infrastructure.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class UnitAndOrdersTablesToUseSoftDelete : Migration
+    public partial class UnitAndOrdersTablesToUseSoftDelete : Microsoft.EntityFrameworkCore.Migrations.Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

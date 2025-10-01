@@ -10,6 +10,6 @@ namespace Inventory.Mostafa.Domain.Specification.Store
     {
         public int? UnitId { get; set; }
         public int? PageSize { get; set; }
-        public int? PageIndex { get; set; }
+        public int? PageIndex { get; set; } = 1;
     }
 }

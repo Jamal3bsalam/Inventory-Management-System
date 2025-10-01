@@ -1,4 +1,5 @@
 ﻿using Inventory.Mostafa.Domain.Entities;
+using Inventory.Mostafa.Domain.Entities.AssetsReturns;
 using Inventory.Mostafa.Domain.Entities.CustodayTables;
 using Inventory.Mostafa.Domain.Entities.Identity;
 using Inventory.Mostafa.Domain.Entities.Opening;
@@ -48,5 +49,8 @@ namespace Inventory.Mostafa.Infrastructure.Data.Context
         public DbSet<Custoday> Custodays { get; set; }
         public DbSet<CustodyItem> CustodyItems { get; set; }
 
+        public DbSet<WriteOff> WriteOff { get; set; }
+        public DbSet<Returns> Returns { get; set; }
+        public DbSet<CustodayTransfers> CustodayTransfers { get; set; }
     }
 }

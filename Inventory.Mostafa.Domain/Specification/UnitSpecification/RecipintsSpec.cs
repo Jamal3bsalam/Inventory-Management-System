@@ -9,6 +9,10 @@ namespace Inventory.Mostafa.Domain.Specification.UnitSpecification
 {
     public class RecipintsSpec:Specifications<Recipients,int>
     {
+        public RecipintsSpec(int id) : base(i => i.Id == id)
+        {
+            ApplyInclude();
+        }
         public RecipintsSpec(string search) : base(S => S.IsDeleted != true && (string.IsNullOrEmpty(search) || S.Name.ToLower().Contains(search)))
         {
             ApplyInclude();

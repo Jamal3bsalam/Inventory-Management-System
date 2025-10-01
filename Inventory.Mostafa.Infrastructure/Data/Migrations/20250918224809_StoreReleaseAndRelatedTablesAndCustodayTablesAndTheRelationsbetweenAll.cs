@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Inventory.Mostafa.Infrastructure.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class StoreReleaseAndRelatedTablesAndCustodayTablesAndTheRelationsbetweenAll : Migration
+    public partial class StoreReleaseAndRelatedTablesAndCustodayTablesAndTheRelationsbetweenAll : Microsoft.EntityFrameworkCore.Migrations.Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

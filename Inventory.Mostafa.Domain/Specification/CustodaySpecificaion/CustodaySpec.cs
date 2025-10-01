@@ -15,18 +15,24 @@ namespace Inventory.Mostafa.Domain.Specification.CustodaySpecificaion
             ApplyInclude();
         }
 
-        //public ItemSpec(SpecParameter specParameters) : base(S => S.IsDeleted != true && (string.IsNullOrEmpty(specParameters.Search) || S.ItemsName.ToLower().Contains(specParameters.Search)))
-        //{
+        public CustodaySpec(int unitId,bool flag) : base(c => c.UnitId == unitId)
+        {
+            ApplyInclude();
+            
+        }
 
-        //    if (specParameters.pageIndex.HasValue && specParameters.pageSize.HasValue)
-        //    {
-        //        ApplyPagination(specParameters.pageSize.Value * (specParameters.pageIndex.Value - 1), specParameters.pageSize.Value);
-        //    }
-        //}
+        public CustodaySpec(int custodyId,bool flag1,bool flag2) : base(C => C.Id == custodyId)
+        {
+            ApplyInclude();
+        }
 
         private void ApplyInclude()
         {
             Include.Add(C => C.CustodyItems);
+            Include.Add(C => C.Recipients);
+            Include.Add(C => C.Unit);
+            IncludeStrings.Add($"{nameof(Custoday.CustodyItems)}.{nameof(CustodyItem.Item)}");
+           
         }
     }
 }

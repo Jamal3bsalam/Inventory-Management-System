@@ -14,6 +14,7 @@ using Inventory.Mostafa.Application.Units.Command.Delete;
 using Inventory.Mostafa.Application.Units.Command.Update;
 using Inventory.Mostafa.Domain.Shared;
 using Inventory.Mostafa.Domain.Specification.Store;
+using Inventory.Mostafa.Domain.Specification.UnitExp;
 using Inventory.Mostafa.Pl.Attributes;
 using Inventory.Mostafa.Pl.Response.Error;
 using Inventory.Mostafa.Pl.Response.General;
@@ -39,9 +40,10 @@ namespace Inventory.Mostafa.Pl.Controllers
         [HttpGet]
         [Authorize(AuthenticationSchemes = "Bearer", Roles = "Admin,User")]
         [Cashed(60)]
-        public async Task<ActionResult<ApiResponse<Pagination<IEnumerable<UnitExpensDto>>>>> GetAllUnitExpenses([FromQuery] StoreReleaseSpecParameter parameter)
+        public async Task<ActionResult<ApiResponse<Pagination<IEnumerable<UnitExpensDto>>>>> GetAllUnitExpenses([FromQuery] UnitExpenseParameter parameter)
         {
             var getAllUnitExpensesQuery = parameter.Adapt<UnitsExpensesQuery>();
+            getAllUnitExpensesQuery.Search = parameter.Search;
             var Releases = await _mediator.Send(getAllUnitExpensesQuery);
             if (Releases == null) return BadRequest(new ErrorResponse(400, "Faild To Retrive All Orders"));
             return Ok(new ApiResponse<Pagination<IEnumerable<UnitExpensDto>>>(true, 200, "StoreRelease Retrived Successfully.", Releases.Data));

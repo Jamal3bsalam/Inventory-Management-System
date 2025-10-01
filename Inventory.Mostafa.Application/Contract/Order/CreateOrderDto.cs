@@ -23,10 +23,10 @@ namespace Inventory.Mostafa.Application.Contract.Order
         [Required(ErrorMessage = "Order date is required.")]
         [DataType(DataType.Date)]
         [SwaggerSchema(Format = "date", Description = "Format: yyyy-MM-dd")]
-        public DateTime? OrderDate { get; set; } = DateTime.UtcNow.Date;      // التاريخ
+        public DateOnly? OrderDate { get; set; }      // التاريخ
         public string? Attachment { get; set; }
         [Required(ErrorMessage = "At least one item is required.")]
-        public List<OrderItemDto>? Items { get; set; }
+        public List<CreateOrderItem>? Items { get; set; }
 
     }
 }

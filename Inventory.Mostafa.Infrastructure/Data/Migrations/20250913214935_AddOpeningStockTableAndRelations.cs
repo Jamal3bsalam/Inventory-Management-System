@@ -5,7 +5,7 @@
 namespace Inventory.Mostafa.Infrastructure.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class AddOpeningStockTableAndRelations : Migration
+    public partial class AddOpeningStockTableAndRelations : Microsoft.EntityFrameworkCore.Migrations.Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

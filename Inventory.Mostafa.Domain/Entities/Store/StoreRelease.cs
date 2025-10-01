@@ -14,7 +14,7 @@ namespace Inventory.Mostafa.Domain.Entities.Store
         public int RecipientsId { get; set; }
         public string? DocumentNumber { get; set; } = string.Empty;
         public string? DocumentPath { get; set; }
-        public DateTime ReleaseDate { get; set; }
+        public DateOnly ReleaseDate { get; set; }
         public bool IsDeleted { get; set; }
         public DateTime? DeletedAt { get; set; }
 

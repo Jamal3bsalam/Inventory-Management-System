@@ -11,7 +11,7 @@ namespace Inventory.Mostafa.Application.Contract.CustodayRec
     public class UpdateRecordDto
     {
         public string? Notic { get; set; }
-        public DateTime? Date { get; set; }
+        public DateOnly? Date { get; set; }
         public IFormFile? File { get; set; }
     }
 }

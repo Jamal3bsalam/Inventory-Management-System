@@ -1,7 +1,11 @@
-﻿using Inventory.Mostafa.Domain.Repositories;
+﻿using Inventory.Mostafa.Domain.Entities.Identity;
+using Inventory.Mostafa.Domain.Entities.Order;
+using Inventory.Mostafa.Domain.Entities.Store;
+using Inventory.Mostafa.Domain.Repositories;
 using Inventory.Mostafa.Domain.Shared;
 using Inventory.Mostafa.Domain.Specification;
 using Inventory.Mostafa.Infrastructure.Data.Context;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -26,6 +30,15 @@ namespace Inventory.Mostafa.Infrastructure.Data.Repositories
 
         public async Task<TEntity> GetByIdAsync(Tkey Id)
         {
+            if(typeof(TEntity) == typeof(OrderItems))
+            {
+                return (TEntity)(Object)await _context.OrderItems.FirstOrDefaultAsync(s => s.Id == (int)(object)Id);
+
+            }
+            if (typeof(TEntity) == typeof(StockTransaction))
+            {
+                return (TEntity)(Object) await _context.StockTransactions.FirstOrDefaultAsync(s => s.RelatedId == (int)(object)Id);
+            }
             return await _context.Set<TEntity>().FindAsync(Id);
         }
         public async Task AddAsync(TEntity entity)
@@ -61,5 +74,7 @@ namespace Inventory.Mostafa.Infrastructure.Data.Repositories
         {
             return SpecificationEvaluator<TEntity, Tkey>.GetQuery(_context.Set<TEntity>(), spec);
         }
+
+        
     }
 }

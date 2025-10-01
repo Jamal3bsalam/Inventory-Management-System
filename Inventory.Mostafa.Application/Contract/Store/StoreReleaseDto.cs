@@ -11,7 +11,7 @@ namespace Inventory.Mostafa.Application.Contract.Store
         public int Id { get; set; }
         public string? UnitName { get; set; }
         public string? ReceiverName { get; set; }
-        public DateTime ReleaseDate { get; set; }
+        public DateOnly ReleaseDate { get; set; }
         public string? StoreReleaseType { get; set; }
         public string? DocumentNumber { get; set; }
         public string? FileUrl { get; set; }

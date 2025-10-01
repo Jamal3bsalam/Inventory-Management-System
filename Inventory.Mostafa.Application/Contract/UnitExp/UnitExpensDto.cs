@@ -15,7 +15,7 @@ namespace Inventory.Mostafa.Application.Contract.UnitExp
         public string? ExpenseType { get; set; }
         public string? AttachmentUrl { get; set; }
         public string? DocumentNumber { get; set; }
-        public DateTime? ExpenseDate { get; set; }
+        public DateOnly? ExpenseDate { get; set; }
         public ICollection<UnitExpensItemsDto>? UnitExpenseItemsDtos { get; set; }
     }
 }

@@ -13,7 +13,7 @@ namespace Inventory.Mostafa.Application.Contract.CustodayRec
         [Required(ErrorMessage = "Notice Is Required")]
         public string? Notic { get; set; }
         [Required(ErrorMessage = "Date Is Required")]
-        public DateTime? Date { get; set; }
+        public DateOnly? Date { get; set; }
         public IFormFile? File { get; set; }
     }
 }

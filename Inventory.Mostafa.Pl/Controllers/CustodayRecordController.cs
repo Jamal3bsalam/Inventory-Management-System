@@ -4,6 +4,7 @@ using Inventory.Mostafa.Application.CustodayRec.Command.Add;
 using Inventory.Mostafa.Application.CustodayRec.Command.Delete;
 using Inventory.Mostafa.Application.CustodayRec.Command.Update;
 using Inventory.Mostafa.Application.CustodayRec.Query;
+using Inventory.Mostafa.Application.CustodayRec.Query.All;
 using Inventory.Mostafa.Application.ITem.Command.Add;
 using Inventory.Mostafa.Application.ITem.Command.Delete;
 using Inventory.Mostafa.Application.ITem.Command.Update;

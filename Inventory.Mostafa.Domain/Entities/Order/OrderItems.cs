@@ -17,7 +17,7 @@ namespace Inventory.Mostafa.Domain.Entities.Order
         public Items? Items { get; set; }
         public int? StockNumber { get; set; }
         public int? Quantity { get; set; }
-        public int ConsumedQuantity { get; set; }
+        public int? ConsumedQuantity { get; set; }
         public bool IsDeleted { get; set; }
         public DateTime? DeletedAt { get; set; }
         public ICollection<ItemSerialNumber>? SerialNumbers { get; set; } = new List<ItemSerialNumber>();

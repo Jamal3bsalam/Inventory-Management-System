@@ -10,7 +10,7 @@ namespace Inventory.Mostafa.Domain.Entities.CustodayTables
     public class CustodayRecord : BaseEntity<int>
     {
         public string? Notic { get; set; }
-        public DateTime? Date { get; set; }
+        public DateOnly? Date { get; set; }
         public string? FileUrl { get; set; }
     }
 }

@@ -14,10 +14,17 @@ namespace Inventory.Mostafa.Domain.Specification.Store
         {
             ApplyInclude();
         }
+
+        public StoreItemSpec(int id,bool flag) : base(i => i.Id == id)
+        {
+            ApplyInclude();
+        }
         private void ApplyInclude()
         {
+            Include.Add(s => s.StoreRelease);
             Include.Add(O => O.Items);
             Include.Add(s => s.Order);
+            Include.Add(s => s.OrderItem);
         }
 
     }

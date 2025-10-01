@@ -54,11 +54,11 @@ namespace Inventory.Mostafa.Application.Store.Query.AllStoreRelease
                 Items = S.StoreReleaseItems.Select(i => new StoreReleaseItemResponseDto
                 {
                     Id = i.Id,
-                    ItemName = i.OrderItem?.ItemName,
+                    ItemName = i.Items?.ItemsName,
                     OrderId = i.OrderId,
                     OrderNumber = i.Order?.OrderNumber,
                     OrderType = i.Order?.OrderType,
-                    OrderItemId = i.ItemId,
+                    OrderItemId = i.OrderItemId,
                     Quantity = i.Quantity,
                     SerialNumbers = i.SerialNumbers?.Select(sn => sn.SerialNumber).ToList()
                 }).ToList()

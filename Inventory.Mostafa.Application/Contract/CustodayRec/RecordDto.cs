@@ -10,7 +10,7 @@ namespace Inventory.Mostafa.Application.Contract.CustodayRec
     {
         public int? Id { get; set; }
         public string? Notic { get; set; }
-        public DateTime? Date { get; set; }
+        public DateOnly? Date { get; set; }
         public string? FileUrl { get; set; }
     }
 }

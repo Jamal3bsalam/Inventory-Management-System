@@ -9,8 +9,15 @@ using System.Threading.Tasks;
 
 namespace Inventory.Mostafa.Application.Store.Command.Update
 {
-    public class UpdateStoreReleaseCommand:IRequest<Result<CreateStoreReleaseDto>>
+    public class UpdateStoreReleaseCommand:IRequest<Result<StoreReleaseDto>>
     {
-       
+        public int? storeReleaseId { get; set; }
+        public int UnitId { get; set; }             // الوحدة اللي بيتم الصرف ليها
+        public int ReceiverId { get; set; }         // المستلم
+        public DateOnly ReleaseDate { get; set; }   // تاريخ الصرف
+        public string? DocumentNumber { get; set; }
+        public string? DocumentPath { get; set; }
+        public List<CreateStoreReleaseItemDto> Items { get; set; } = new();
+
     }
 }

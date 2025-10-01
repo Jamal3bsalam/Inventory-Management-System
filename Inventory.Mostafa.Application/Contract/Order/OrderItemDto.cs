@@ -12,6 +12,8 @@ namespace Inventory.Mostafa.Application.Contract.Order
         public string? ItemName { get; set; }
         public int? StockNumber { get; set; }
         public int? Quantity { get; set; }
+        public int? ConsumedQuantity { get; set; }
+        public int? RemainingQuantity { get; set; }
         public ICollection<string>? SerialNumbers { get; set; }
     }
 }

@@ -20,9 +20,4 @@
     <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="9.0.4" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Custoday\Command\" />
-    <Folder Include="Custoday\Query\" />
-  </ItemGroup>
-
 </Project>

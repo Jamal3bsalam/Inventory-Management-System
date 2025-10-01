@@ -48,6 +48,7 @@ namespace Inventory.Mostafa.Application.Order.Command.Add
                     ItemName = item.ItemsName,
                     StockNumber = item.StockNumber,
                     Quantity = items.Quantity,
+                    ConsumedQuantity = 0,
                     SerialNumbers = items.SerialNumbers
                         .Select(s => new ItemSerialNumber { SerialNumber = s })
                         .ToList()
@@ -67,7 +68,7 @@ namespace Inventory.Mostafa.Application.Order.Command.Add
                 SupplierName = order.SupplierName,
                 OrderDate = order.OrderDate,
                 Attachment = _configuration["BASEURL"] + order.Attachment,
-                Items = order.OrderItems.Select(i => new OrderItemDto() { ItemId = i.Id, ItemName = i.ItemName, StockNumber = i.StockNumber, Quantity = i.Quantity, SerialNumbers = i.SerialNumbers.Select(s => s.SerialNumber).ToList() }).ToList(),
+                Items = order.OrderItems.Select(i => new OrderItemDto() { ItemId = i.Id, ItemName = i.ItemName, StockNumber = i.StockNumber, Quantity = i.Quantity,ConsumedQuantity = i.ConsumedQuantity,RemainingQuantity = (i.Quantity - i.ConsumedQuantity) ,SerialNumbers = i.SerialNumbers.Select(s => s.SerialNumber).ToList() }).ToList(),
             };
 
             if (result <= 0) return Result<OrderDto>.Failure("Faild To Add Order.");

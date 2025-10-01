@@ -5,6 +5,7 @@ using Inventory.Mostafa.Pl.Controllers.Helper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using System.Globalization;
 using System.Text.Json.Serialization;
 
 namespace Inventory.Mostafa.Pl
@@ -37,21 +38,21 @@ namespace Inventory.Mostafa.Pl
             await app.UseDatabaseMigrationAndSeedAsync();
 
             // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
-
-            //if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
+            //if (app.Environment.IsDevelopment())
             //{
             //    app.UseSwagger();
-            //    app.UseSwaggerUI(options =>
-            //    {
-            //        options.SwaggerEndpoint("/swagger/v1/swagger.json", "AncientAura API V1");
-            //        options.RoutePrefix = ""; // ÌÃ⁄· Swagger «·’›Õ… «·«› —«÷Ì…
-            //    });
+            //    app.UseSwaggerUI();
             //}
+
+            if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI(options =>
+                {
+                    options.SwaggerEndpoint("/swagger/v1/swagger.json", "AncientAura API V1");
+                    options.RoutePrefix = ""; // ÌÃ⁄· Swagger «·’›Õ… «·«› —«÷Ì…
+                });
+            }
 
             app.UseHttpsRedirection();
 

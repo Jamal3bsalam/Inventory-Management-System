@@ -23,17 +23,20 @@ namespace Inventory.Mostafa.Application.ITem.Command.Update
         }
         public async Task<Result<ItemDto>> Handle(UpdateItemCommand request, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrEmpty(request.ItemsName) || request.StockNumber == 0) return Result<ItemDto>.Failure("Please fill all required fields correctly.");
+           // if (string.IsNullOrEmpty(request.ItemsName) || request.StockNumber == 0) return Result<ItemDto>.Failure("Please fill all required fields correctly.");
 
             var spec = new ItemSpec(request.Id.Value);
             var item = await _unitOfWork.Repository<Items,int>().GetWithSpecAsync(spec);
 
             if (item == null) return Result<ItemDto>.Failure("There Is No Item With This Id.");
 
-            item.ItemsName = request.ItemsName;
-            item.StockNumber = request.StockNumber;
+            if(!string.IsNullOrEmpty(request.ItemsName))
+                item.ItemsName = request.ItemsName;
 
-             _unitOfWork.Repository<Items,int>().Update(item);
+            if(request.StockNumber != null && request.StockNumber > 0)
+                item.StockNumber = request.StockNumber;
+
+            _unitOfWork.Repository<Items,int>().Update(item);
             var result = await _unitOfWork.CompleteAsync();
 
             if(result <= 0) Result<ItemDto>.Failure("Faild To Update This Item.");

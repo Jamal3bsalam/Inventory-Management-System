@@ -14,7 +14,7 @@ namespace Inventory.Mostafa.Application.CustodayRec.Command.Update
     {
         public int? RecordId { get; set; }
         public string? Notic { get; set; }
-        public DateTime? Date { get; set; }
+        public DateOnly? Date { get; set; }
         public IFormFile? File { get; set; }
     }
 }

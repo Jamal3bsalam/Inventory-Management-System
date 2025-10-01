@@ -9,6 +9,7 @@ using Inventory.Mostafa.Application.Units.Command.Delete;
 using Inventory.Mostafa.Application.Units.Command.Update;
 using Inventory.Mostafa.Application.Units.Query.AllUnits;
 using Inventory.Mostafa.Application.Units.Query.RecipintsSearch;
+using Inventory.Mostafa.Domain.Entities.Identity;
 using Inventory.Mostafa.Domain.Shared;
 using Inventory.Mostafa.Domain.Specification;
 using Inventory.Mostafa.Pl.Attributes;
@@ -19,6 +20,8 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Unit = Inventory.Mostafa.Domain.Entities.Identity.Unit;
+
 
 namespace Inventory.Mostafa.Pl.Controllers
 {
@@ -42,7 +45,7 @@ namespace Inventory.Mostafa.Pl.Controllers
             var result = await _mediator.Send(getAllUnitsQuery);
             if (result == null) return BadRequest(new ErrorResponse(400, "Faild To Retrive All Units"));
 
-            return Ok(new ApiResponse<Pagination<IEnumerable<UnitDto>>>(true, 200, "Items Retrived Successfully.", result));
+            return Ok(new ApiResponse<Pagination<IEnumerable<UnitDto>>>(true, 200, "Units Retrived Successfully.", result));
         }
 
         [HttpPost]
@@ -79,6 +82,5 @@ namespace Inventory.Mostafa.Pl.Controllers
 
             return Ok(new ApiResponse<string>(true, 200, result.Message, result.Data));
         }
-
     }
 }

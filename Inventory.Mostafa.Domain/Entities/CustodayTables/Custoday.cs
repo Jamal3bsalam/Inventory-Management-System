@@ -13,8 +13,8 @@ namespace Inventory.Mostafa.Domain.Entities.CustodayTables
         public int UnitId { get; set; }       // الوحدة المرتبطة بالعهدة
         public int RecipientsId { get; set; }   // الشخص اللي ماسك العهدة
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
-        public bool IsDeleted { get; set; }
-        public DateTime? DeletedAt { get; set; }
+        public DateOnly? TransactionDate { get; set; }
+        public string? DocumentPath { get; set; }
 
         // Navigation
         public Unit? Unit { get; set; }

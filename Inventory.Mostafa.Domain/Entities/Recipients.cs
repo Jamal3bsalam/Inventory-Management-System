@@ -1,4 +1,5 @@
-﻿using Inventory.Mostafa.Domain.Entities.CustodayTables;
+﻿using Inventory.Mostafa.Domain.Entities.AssetsReturns;
+using Inventory.Mostafa.Domain.Entities.CustodayTables;
 using Inventory.Mostafa.Domain.Entities.Identity;
 using Inventory.Mostafa.Domain.Entities.Store;
 using Inventory.Mostafa.Domain.Entities.UnitEx;
@@ -22,6 +23,11 @@ namespace Inventory.Mostafa.Domain.Entities
         public int? CustodayId { get; set; }
         public Custoday? Custoday { get; set; }
         public ICollection<UnitExpense>? UnitExpenses { get; set; }
+        public ICollection<Returns>? Returns { get; set; }
+        public ICollection<WriteOff>? WriteOffs { get; set; }
+        public ICollection<CustodayTransfers> OldTransfers { get; set; }
+        public ICollection<CustodayTransfers> NewTransfers { get; set; }
+
 
     }
 }

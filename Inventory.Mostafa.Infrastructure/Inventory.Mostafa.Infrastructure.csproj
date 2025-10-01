@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <Folder Include="Extension\" />
+    <Folder Include="Service\SoftDelete\" />
   </ItemGroup>
 
   <ItemGroup>

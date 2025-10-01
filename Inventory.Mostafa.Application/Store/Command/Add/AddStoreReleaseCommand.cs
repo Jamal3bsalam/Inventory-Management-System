@@ -13,7 +13,7 @@ namespace Inventory.Mostafa.Application.Store.Command.Add
     {
         public int UnitId { get; set; }             // الوحدة اللي بيتم الصرف ليها
         public int ReceiverId { get; set; }         // المستلم
-        public DateTime ReleaseDate { get; set; }   // تاريخ الصرف
+        public DateOnly ReleaseDate { get; set; }   // تاريخ الصرف
         public string? DocumentNumber { get; set; } 
         public string? DocumentPath { get; set; }
         public List<CreateStoreReleaseItemDto> Items { get; set; } = new();

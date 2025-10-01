@@ -22,6 +22,89 @@ namespace Inventory.Mostafa.Infrastructure.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Inventory.Mostafa.Domain.Entities.AssetsReturns.Returns", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DocumentPath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool?>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Reason")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("RecipientsId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UnitId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("storeReleaseItemId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RecipientsId");
+
+                    b.HasIndex("UnitId");
+
+                    b.HasIndex("storeReleaseItemId");
+
+                    b.ToTable("Returns");
+                });
+
+            modelBuilder.Entity("Inventory.Mostafa.Domain.Entities.AssetsReturns.WriteOff", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DocumentPath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool?>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("RecipintsId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ReturnId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UnitId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RecipintsId");
+
+                    b.HasIndex("ReturnId");
+
+                    b.HasIndex("UnitId");
+
+                    b.ToTable("WriteOff");
+                });
+
             modelBuilder.Entity("Inventory.Mostafa.Domain.Entities.CustodayTables.Custoday", b =>
                 {
                     b.Property<int>("Id")
@@ -33,14 +116,14 @@ namespace Inventory.Mostafa.Infrastructure.Data.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                    b.Property<string>("DocumentPath")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("RecipientsId")
                         .HasColumnType("int");
+
+                    b.Property<DateOnly?>("TransactionDate")
+                        .HasColumnType("date");
 
                     b.Property<int>("UnitId")
                         .HasColumnType("int");
@@ -63,8 +146,8 @@ namespace Inventory.Mostafa.Infrastructure.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime?>("Date")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly?>("Date")
+                        .HasColumnType("date");
 
                     b.Property<string>("FileUrl")
                         .HasColumnType("nvarchar(max)");
@@ -75,6 +158,48 @@ namespace Inventory.Mostafa.Infrastructure.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("CustodayRecord");
+                });
+
+            modelBuilder.Entity("Inventory.Mostafa.Domain.Entities.CustodayTables.CustodayTransfers", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("DocumentPath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ItemId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NewRecipientId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OldRecipientId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<DateOnly>("TransactionDate")
+                        .HasColumnType("date");
+
+                    b.Property<int>("UnitId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ItemId");
+
+                    b.HasIndex("NewRecipientId");
+
+                    b.HasIndex("OldRecipientId");
+
+                    b.HasIndex("UnitId");
+
+                    b.ToTable("CustodayTransfers");
                 });
 
             modelBuilder.Entity("Inventory.Mostafa.Domain.Entities.CustodayTables.CustodyItem", b =>
@@ -295,7 +420,7 @@ namespace Inventory.Mostafa.Infrastructure.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ConsumedQuantity")
+                    b.Property<int?>("ConsumedQuantity")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("DeletedAt")
@@ -345,8 +470,8 @@ namespace Inventory.Mostafa.Infrastructure.Data.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime>("OrderDate")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly>("OrderDate")
+                        .HasColumnType("date");
 
                     b.Property<string>("OrderNumber")
                         .HasColumnType("nvarchar(max)");
@@ -477,8 +602,8 @@ namespace Inventory.Mostafa.Infrastructure.Data.Migrations
                     b.Property<int>("RecipientsId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("ReleaseDate")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly>("ReleaseDate")
+                        .HasColumnType("date");
 
                     b.Property<int>("UnitId")
                         .HasColumnType("int");
@@ -545,8 +670,8 @@ namespace Inventory.Mostafa.Infrastructure.Data.Migrations
                     b.Property<string>("DocumentNumber")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<DateTime?>("ExpenseDate")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly?>("ExpenseDate")
+                        .HasColumnType("date");
 
                     b.Property<string>("ExpenseType")
                         .HasColumnType("nvarchar(max)");
@@ -735,6 +860,54 @@ namespace Inventory.Mostafa.Infrastructure.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Inventory.Mostafa.Domain.Entities.AssetsReturns.Returns", b =>
+                {
+                    b.HasOne("Inventory.Mostafa.Domain.Entities.Recipients", "Recipients")
+                        .WithMany("Returns")
+                        .HasForeignKey("RecipientsId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("Inventory.Mostafa.Domain.Entities.Identity.Unit", "Unit")
+                        .WithMany("Returns")
+                        .HasForeignKey("UnitId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("Inventory.Mostafa.Domain.Entities.Store.StoreReleaseItem", "StoreReleaseItem")
+                        .WithMany("Returns")
+                        .HasForeignKey("storeReleaseItemId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("Recipients");
+
+                    b.Navigation("StoreReleaseItem");
+
+                    b.Navigation("Unit");
+                });
+
+            modelBuilder.Entity("Inventory.Mostafa.Domain.Entities.AssetsReturns.WriteOff", b =>
+                {
+                    b.HasOne("Inventory.Mostafa.Domain.Entities.Recipients", "Recipients")
+                        .WithMany("WriteOffs")
+                        .HasForeignKey("RecipintsId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("Inventory.Mostafa.Domain.Entities.AssetsReturns.Returns", "Returns")
+                        .WithMany("WriteOffs")
+                        .HasForeignKey("ReturnId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("Inventory.Mostafa.Domain.Entities.Identity.Unit", "Unit")
+                        .WithMany("WriteOffs")
+                        .HasForeignKey("UnitId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("Recipients");
+
+                    b.Navigation("Returns");
+
+                    b.Navigation("Unit");
+                });
+
             modelBuilder.Entity("Inventory.Mostafa.Domain.Entities.CustodayTables.Custoday", b =>
                 {
                     b.HasOne("Inventory.Mostafa.Domain.Entities.Recipients", "Recipients")
@@ -750,6 +923,41 @@ namespace Inventory.Mostafa.Infrastructure.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Recipients");
+
+                    b.Navigation("Unit");
+                });
+
+            modelBuilder.Entity("Inventory.Mostafa.Domain.Entities.CustodayTables.CustodayTransfers", b =>
+                {
+                    b.HasOne("Inventory.Mostafa.Domain.Entities.Items", "Item")
+                        .WithMany("CustodayTransfers")
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Inventory.Mostafa.Domain.Entities.Recipients", "NewRecipient")
+                        .WithMany("NewTransfers")
+                        .HasForeignKey("NewRecipientId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Inventory.Mostafa.Domain.Entities.Recipients", "OldRecipient")
+                        .WithMany("OldTransfers")
+                        .HasForeignKey("OldRecipientId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Inventory.Mostafa.Domain.Entities.Identity.Unit", "Unit")
+                        .WithMany("CustodayTransfers")
+                        .HasForeignKey("UnitId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Item");
+
+                    b.Navigation("NewRecipient");
+
+                    b.Navigation("OldRecipient");
 
                     b.Navigation("Unit");
                 });
@@ -994,6 +1202,11 @@ namespace Inventory.Mostafa.Infrastructure.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Inventory.Mostafa.Domain.Entities.AssetsReturns.Returns", b =>
+                {
+                    b.Navigation("WriteOffs");
+                });
+
             modelBuilder.Entity("Inventory.Mostafa.Domain.Entities.CustodayTables.Custoday", b =>
                 {
                     b.Navigation("CustodyItems");
@@ -1001,17 +1214,25 @@ namespace Inventory.Mostafa.Infrastructure.Data.Migrations
 
             modelBuilder.Entity("Inventory.Mostafa.Domain.Entities.Identity.Unit", b =>
                 {
+                    b.Navigation("CustodayTransfers");
+
                     b.Navigation("Custodays");
 
                     b.Navigation("Recipients");
 
+                    b.Navigation("Returns");
+
                     b.Navigation("StoreReleases");
 
                     b.Navigation("UnitExpenses");
+
+                    b.Navigation("WriteOffs");
                 });
 
             modelBuilder.Entity("Inventory.Mostafa.Domain.Entities.Items", b =>
                 {
+                    b.Navigation("CustodayTransfers");
+
                     b.Navigation("CustodyItems");
 
                     b.Navigation("OpeningStocks");
@@ -1050,9 +1271,17 @@ namespace Inventory.Mostafa.Infrastructure.Data.Migrations
                 {
                     b.Navigation("Custoday");
 
+                    b.Navigation("NewTransfers");
+
+                    b.Navigation("OldTransfers");
+
+                    b.Navigation("Returns");
+
                     b.Navigation("StoreReleases");
 
                     b.Navigation("UnitExpenses");
+
+                    b.Navigation("WriteOffs");
                 });
 
             modelBuilder.Entity("Inventory.Mostafa.Domain.Entities.Store.StoreRelease", b =>
@@ -1062,6 +1291,8 @@ namespace Inventory.Mostafa.Infrastructure.Data.Migrations
 
             modelBuilder.Entity("Inventory.Mostafa.Domain.Entities.Store.StoreReleaseItem", b =>
                 {
+                    b.Navigation("Returns");
+
                     b.Navigation("SerialNumbers");
                 });
 
