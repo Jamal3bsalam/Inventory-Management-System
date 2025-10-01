@@ -48,6 +48,13 @@ This project follows **Clean Architecture**, which promotes separation of concer
 ---
 ## 🔄 Caching
 - **Frequently accessed queries (such as inventory list, available stock, and reports) are cached using In-Memory Caching to reduce database load and improve performance.
+## 🚀 Getting Started
+
+### Prerequisites
+Make sure you have the following installed:
+- ✅ [.NET 8](https://dotnet.microsoft.com/en-us/download)
+- ✅ [SQL Server](https://www.microsoft.com/en-us/sql-server/sql-server-downloads)
+- ✅ [Visual Studio](https://visualstudio.microsoft.com/)
 
 ## ⚙️ Installation & Setup
 
