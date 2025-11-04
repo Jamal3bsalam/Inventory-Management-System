@@ -33,12 +33,12 @@ namespace Inventory.Mostafa.Pl.Controllers
         [HttpGet]
         [Authorize(AuthenticationSchemes = "Bearer", Roles = "Admin,User")]
         [Cashed(60)]
-        public async Task<ActionResult<ApiResponse<Pagination<IEnumerable<ReturnDto>>>>> GetAllReturns([FromQuery] StoreReleaseSpecParameter parameter)
+        public async Task<ActionResult<ApiResponse<Pagination<IEnumerable<AllReturnDto>>>>> GetAllReturns([FromQuery] StoreReleaseSpecParameter parameter)
         {
             var getAllReturnsQuery = parameter.Adapt<ReturnsQuery>();
             var Releases = await _mediator.Send(getAllReturnsQuery);
             if (Releases == null) return BadRequest(new ErrorResponse(400, "Faild To Retrive All Returns"));
-            return Ok(new ApiResponse<Pagination<IEnumerable<ReturnDto>>>(true, 200, "Returns Retrived Successfully.", Releases.Data));
+            return Ok(new ApiResponse<Pagination<IEnumerable<AllReturnDto>>>(true, 200, "Returns Retrived Successfully.", Releases.Data));
         }
 
         [HttpPost]
@@ -48,7 +48,7 @@ namespace Inventory.Mostafa.Pl.Controllers
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var returnCommand = new AddReturnCommand() { UnitId = createReturn.UnitId,RecipintsId = createReturn.RecipintsId , StoreReleaseItemId = createReturn.StoreReleaseItemId, Document = createReturn.Document , Quantity = createReturn.Quantity , Reason = createReturn.Reason};
+            var returnCommand = new AddReturnCommand() { UnitId = createReturn.UnitId,RecipintsId = createReturn.RecipintsId , UnitExpenseId = createReturn.UnitExpenseId, Document = createReturn.Document,ItemId = createReturn.ItemId , Quantity = createReturn.Quantity , Reason = createReturn.Reason};
             var returns = await _mediator.Send(returnCommand);
             if(returns.Data == null) return BadRequest(new ErrorResponse(400,returns.Message));
 

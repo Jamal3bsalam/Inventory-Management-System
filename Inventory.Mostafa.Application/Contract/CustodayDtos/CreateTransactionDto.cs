@@ -9,12 +9,11 @@ namespace Inventory.Mostafa.Application.Contract.CustodayDtos
 {
     public class CreateTransactionDto
     {
-        public int? CustodayId { get; set; }
-        public int? UnitId { get; set; }
-        public int? ItemId { get; set; }
-        public int? NewRecipints { get; set; }
-        public int? Quantity { get; set; }
-        public DateOnly? TransactionDate { get; set; }
-        public IFormFile? File { get; set; }
+        public int UnitId { get; set; }
+        public int NewRecipints { get; set; }
+        public DateOnly TransactionDate { get; set; }
+        public string? FileName { get; set; }
+        public ICollection<CustodayItemDto>? Items { get; set; }
+
     }
 }

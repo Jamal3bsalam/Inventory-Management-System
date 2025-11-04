@@ -44,10 +44,10 @@ namespace Inventory.Mostafa.Application.Write.Query.AllWriteOff
                 Id = r.Id,
                 UnitName = r.Unit?.UnitName,
                 RecipintsName = r.Recipients?.Name,
-                ItemName = r.Returns.StoreReleaseItem.OrderItem.ItemName,
+                ItemName = r.Returns?.Item?.ItemsName,
                 DocumetPath = r.DocumentPath != null ? _configuration["BASEURL"] + r.DocumentPath : null,
                 Quantity = r.Quantity,
-            });
+            }) ;
             var pagintion = new Pagination<IEnumerable<WriteOffDto>>(parameter.PageSize, parameter.PageIndex, counts, writeOffsDto);
 
             return Result<Pagination<IEnumerable<WriteOffDto>>>.Success(pagintion, "All WriteOffs Retrived Successfully.");

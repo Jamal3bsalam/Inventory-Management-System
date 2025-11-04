@@ -15,9 +15,7 @@ namespace Inventory.Mostafa.Infrastructure.Data.Configurations.UnitExp
             builder.HasKey(S => S.Id);
             builder.Property(S => S.Id).UseIdentityColumn(1, 1);
 
-            builder.HasIndex(sr => sr.DocumentNumber)
-               .IsUnique()
-               .HasFilter("[DocumentNumber] IS NOT NULL");
+            
 
             builder.HasOne(U => U.Unit)
                    .WithMany(U => U.UnitExpenses)

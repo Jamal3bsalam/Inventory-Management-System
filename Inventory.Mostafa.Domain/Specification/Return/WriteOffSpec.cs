@@ -1,4 +1,6 @@
-﻿using Inventory.Mostafa.Domain.Entities.AssetsReturns;
+﻿using Inventory.Mostafa.Domain.Entities;
+using Inventory.Mostafa.Domain.Entities.AssetsReturns;
+using Inventory.Mostafa.Domain.Entities.CustodayTables;
 using Inventory.Mostafa.Domain.Entities.Order;
 using Inventory.Mostafa.Domain.Entities.Store;
 using Inventory.Mostafa.Domain.Specification.Store;
@@ -46,13 +48,18 @@ namespace Inventory.Mostafa.Domain.Specification.Return
             ApplyInclude();
         }
 
+        public WriteOffSpec(int returnId, bool flag1,bool flag2) : base(S => S.IsDeleted == true && S.ReturnId == returnId)
+        {
+            ApplyInclude();
+        }
+
         private void ApplyInclude()
         {
             Include.Add(r => r.Unit);
             Include.Add(r => r.Recipients);
             Include.Add(r => r.Returns);
-            Include.Add(r => r.Returns.StoreReleaseItem);
-            Include.Add(r => r.Returns.StoreReleaseItem.OrderItem);
+            Include.Add(r => r.Returns.Item);
+
         }
     }
 }

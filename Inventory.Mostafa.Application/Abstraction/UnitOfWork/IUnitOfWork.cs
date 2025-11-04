@@ -1,5 +1,6 @@
 ﻿using Inventory.Mostafa.Domain.Repositories;
 using Inventory.Mostafa.Domain.Shared;
+using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,5 +13,6 @@ namespace Inventory.Mostafa.Application.Abstraction.UnitOfWork
     {
         Task<int> CompleteAsync();
         IGenericRepository<TEntity, Tkey> Repository<TEntity, Tkey>() where TEntity : BaseEntity<Tkey>;
+        Task<IDbContextTransaction> BeginTransactionAsync();
     }
 }

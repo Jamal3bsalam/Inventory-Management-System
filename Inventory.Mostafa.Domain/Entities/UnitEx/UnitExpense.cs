@@ -1,4 +1,5 @@
-﻿using Inventory.Mostafa.Domain.Entities.Identity;
+﻿using Inventory.Mostafa.Domain.Entities.AssetsReturns;
+using Inventory.Mostafa.Domain.Entities.Identity;
 using Inventory.Mostafa.Domain.Shared;
 using System;
 using System.Collections.Generic;
@@ -20,7 +21,8 @@ namespace Inventory.Mostafa.Domain.Entities.UnitEx
         public DateTime DeletedAt { get; set; }
         public Unit? Unit { get; set; }
         public Recipients? Recipients { get; set; }
-
+        public int? StoreReleaseId { get; set; }
         public ICollection<UnitExpenseItems>? ExpenseItems { get; set; }
+        public ICollection<Returns>? Returns { get; set; }
     }
 }

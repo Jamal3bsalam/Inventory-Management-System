@@ -13,7 +13,7 @@ namespace Inventory.Mostafa.Domain.Entities.CustodayTables
         public int UnitId { get; set; }
         public Unit? Unit { get; set; }
 
-        public int ItemId { get; set; }
+        public int? ItemId { get; set; }
         public Items? Item { get; set; }
 
         public int OldRecipientId { get; set; }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Inventory.Mostafa.Domain.Entities.CustodayTables;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,7 @@ namespace Inventory.Mostafa.Application.Contract.CustodayDtos
 {
     public class TransactionDto
     {
+        public int? Id { get; set; }
         public string? UnitName { get; set; }
         public string? OldRecipints { get; set; }
         public string? NewRecipints { get; set; }

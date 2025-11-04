@@ -5,6 +5,7 @@ using Inventory.Mostafa.Domain.Entities.CustodayTables;
 using Inventory.Mostafa.Domain.Entities.Identity;
 using Inventory.Mostafa.Domain.Entities.Order;
 using Inventory.Mostafa.Domain.Entities.Store;
+using Inventory.Mostafa.Domain.Entities.UnitEx;
 using Inventory.Mostafa.Domain.Shared;
 using Inventory.Mostafa.Domain.Specification.CustodaySpecificaion;
 using Inventory.Mostafa.Domain.Specification.ITemSpecification;
@@ -61,7 +62,7 @@ namespace Inventory.Mostafa.Application.Store.Command.Add
                 UnitId = request.UnitId,
                 RecipientsId = request.ReceiverId,
                 DocumentNumber = request.DocumentNumber,
-                DocumentPath = $"\\Files\\StoreRelease\\{request.DocumentPath}",
+                DocumentPath = request.DocumentPath != null? $"\\Files\\StoreRelease\\{request.DocumentPath}" : null,
                 ReleaseDate = request.ReleaseDate,
                 StoreReleaseItems = new List<StoreReleaseItem>()
             };
@@ -142,7 +143,7 @@ namespace Inventory.Mostafa.Application.Store.Command.Add
                         Quantity = item.Quantity
                     };
                     await _unitOfWork.Repository<CustodyItem, int>().AddAsync(custodyItem);
-
+                    await _unitOfWork.CompleteAsync();
                 }
                 else
                 {
@@ -153,8 +154,35 @@ namespace Inventory.Mostafa.Application.Store.Command.Add
 
             await _unitOfWork.CompleteAsync();
 
+            
+
             var Storespec = new StoreItemSpec(storeRelease.Id);
             var storeItem = await _unitOfWork.Repository<StoreReleaseItem, int>().GetWithSpecAsync(Storespec);
+
+            var itemSpec = new ItemSpec(storeItem.ItemId.Value);
+            var items = await _unitOfWork.Repository<Items,int>().GetWithSpecAsync(itemSpec);
+            if (items == null) return Result<StoreReleaseDto>.Failure($"There Is No Item With This Id:{storeItem.Id}");
+
+            var unitExpense = new UnitExpense()
+            {
+                UnitId = storeRelease.UnitId,
+                RecipientsId = storeRelease.RecipientsId,
+                ExpenseType = "صرف من المستودع",
+                DocumentNumber = storeRelease.DocumentNumber,
+                AttachmentUrl = storeRelease.DocumentPath,
+                ExpenseDate = storeRelease.ReleaseDate,
+                StoreReleaseId = storeRelease.Id,
+                ExpenseItems = storeRelease.StoreReleaseItems.Select(u => new UnitExpenseItems()
+                {
+                    ItemId = u.ItemId,
+                    ItemName = items.ItemsName,
+                    Quantity = u.Quantity,
+                }).ToList()
+               
+            };
+
+            await _unitOfWork.Repository<UnitExpense,int>().AddAsync(unitExpense);
+            await _unitOfWork.CompleteAsync();
 
             //var OrderitemSpec = new ItemSpec(storeItem.Items.Id);
             //var OrderitemDb = await _unitOfWork.Repository<Items,int>().GetWithSpecAsync(itemSpec);

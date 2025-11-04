@@ -47,7 +47,7 @@ namespace Inventory.Mostafa.Application.Order.Command.Update
                 order.OrderType = request.OrderType.Value.ToString();
             }
 
-            if (request.OrderNumber != null || request.OrderNumber != 0)
+            if (request.OrderNumber != null)
             {
                 order.OrderNumber = request.OrderNumber.ToString();
             }

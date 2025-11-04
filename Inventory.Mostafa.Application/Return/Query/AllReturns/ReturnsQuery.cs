@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Inventory.Mostafa.Application.Return.Query.AllReturns
 {
-    public class ReturnsQuery:IRequest<Result<Pagination<IEnumerable<ReturnDto>>>>
+    public class ReturnsQuery:IRequest<Result<Pagination<IEnumerable<AllReturnDto>>>>
     {
         public int? UnitId { get; set; }
         public int? PageSize { get; set; }

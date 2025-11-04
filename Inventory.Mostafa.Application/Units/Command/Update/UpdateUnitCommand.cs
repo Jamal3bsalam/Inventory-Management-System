@@ -14,6 +14,6 @@ namespace Inventory.Mostafa.Application.Units.Command.Update
     {
         public int? Id { get; set; }
         public string? UnitName { get; set; }
-        public ICollection<Recipients>? Recipients { get; set; }
+        public ICollection<UpdateRecipintsDto>? Recipients { get; set; }
     }
 }

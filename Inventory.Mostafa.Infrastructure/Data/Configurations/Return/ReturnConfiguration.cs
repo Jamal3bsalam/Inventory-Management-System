@@ -16,9 +16,9 @@ namespace Inventory.Mostafa.Infrastructure.Data.Configurations.Return
             builder.HasKey(r => r.Id);
             builder.Property(r => r.Id).UseIdentityColumn(1, 1);
 
-            builder.HasOne(r => r.StoreReleaseItem)
+            builder.HasOne(r => r.Expense)
                    .WithMany(s => s.Returns)
-                   .HasForeignKey(r => r.storeReleaseItemId)
+                   .HasForeignKey(r => r.ExpenseId)
                    .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne(r => r.Unit)

@@ -28,7 +28,7 @@ namespace Inventory.Mostafa.Infrastructure.Service.Files
             var FolderName = GetFolderName(typeof(TEntity).Name);
             string folderPath = (CurrentDirectory + $"\\wwwroot\\Files\\{FolderName}");
 
-            string fileName = file.FileName;
+            string fileName = $"{Guid.NewGuid()}{file.FileName}";
 
             string filePath = Path.Combine(folderPath, fileName);
             using var fileStream = new FileStream(filePath, FileMode.Create);

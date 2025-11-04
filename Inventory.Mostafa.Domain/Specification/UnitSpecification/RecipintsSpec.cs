@@ -13,6 +13,12 @@ namespace Inventory.Mostafa.Domain.Specification.UnitSpecification
         {
             ApplyInclude();
         }
+
+        public RecipintsSpec(int unitId,bool flag) : base(i => i.UnitId == unitId)
+        {
+            ApplyInclude();
+        }
+
         public RecipintsSpec(string search) : base(S => S.IsDeleted != true && (string.IsNullOrEmpty(search) || S.Name.ToLower().Contains(search)))
         {
             ApplyInclude();

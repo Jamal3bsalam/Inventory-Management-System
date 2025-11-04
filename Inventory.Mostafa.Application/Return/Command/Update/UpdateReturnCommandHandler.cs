@@ -6,10 +6,12 @@ using Inventory.Mostafa.Domain.Entities.AssetsReturns;
 using Inventory.Mostafa.Domain.Entities.CustodayTables;
 using Inventory.Mostafa.Domain.Entities.Identity;
 using Inventory.Mostafa.Domain.Entities.Store;
+using Inventory.Mostafa.Domain.Entities.UnitEx;
 using Inventory.Mostafa.Domain.Shared;
 using Inventory.Mostafa.Domain.Specification.CustodaySpecificaion;
 using Inventory.Mostafa.Domain.Specification.Return;
 using Inventory.Mostafa.Domain.Specification.Store;
+using Inventory.Mostafa.Domain.Specification.UnitExp;
 using Inventory.Mostafa.Domain.Specification.UnitSpecification;
 using MediatR;
 using Microsoft.Extensions.Configuration;
@@ -51,10 +53,23 @@ namespace Inventory.Mostafa.Application.Return.Command.Update
             var custodaySpec = new CustodaySpec(returns.RecipientsId.Value);
             var custoday = await _unitOfWork.Repository<Custoday, int>().GetWithSpecAsync(custodaySpec);
 
-            var storeItemsSpec = new StoreItemSpec(returns.storeReleaseItemId.Value, true);
-            var storeItem = await _unitOfWork.Repository<StoreReleaseItem, int>().GetWithSpecAsync(storeItemsSpec);
+            var unitExpenseSpec = new UnitExpenseSpec(returns.ExpenseId.Value);
+            var unitExpense = await _unitOfWork.Repository<UnitExpense, int>().GetWithSpecAsync(unitExpenseSpec);
 
-            if (request.Quantity > storeItem.OrderItem.Quantity) return Result<ReturnDto>.Failure($"Return quantity cannot be greater than the released quantity(Available: {storeItem.Quantity}, Requested: {request.Quantity}).");
+            var expenseItemsSpec = new UnitExpenseItemSpec(unitExpense.Id);
+            var expenseItems = await _unitOfWork.Repository<UnitExpenseItems, int>().GetAllWithSpecAsync(expenseItemsSpec);
+
+            if (expenseItems == null) return Result<ReturnDto>.Failure($"Unit Expense Item For Unit Expense With Id: {returns.ExpenseId} Not Fount");
+
+
+            var selectedItem = expenseItems.FirstOrDefault(i => i.ItemId == returns.ItemId);
+
+            var storeItemsSpec = new StoreItemSpec(unitExpense.StoreReleaseId.Value, true);
+            var storeItem = await _unitOfWork.Repository<StoreReleaseItem, int>().GetAllWithSpecAsync(storeItemsSpec);
+            var selectedStoreItem = storeItem.FirstOrDefault(i => i.ItemId == returns.ItemId);
+
+
+            if (request.Quantity > selectedItem.Quantity) return Result<ReturnDto>.Failure($"Return quantity cannot be greater than the released quantity(Available: {selectedStoreItem.Quantity}, Requested: {request.Quantity}).");
 
 
             if (!string.IsNullOrEmpty(request.Reason))
@@ -82,7 +97,7 @@ namespace Inventory.Mostafa.Application.Return.Command.Update
                 if (diff != 0)
                 {
                     returns.Quantity = newQ;
-                    var custodayItems = custoday?.CustodyItems?.FirstOrDefault(c => c.CustodyId == custoday.Id && c.ItemId == storeItem.ItemId);
+                    var custodayItems = custoday?.CustodyItems?.FirstOrDefault(c => c.CustodyId == custoday.Id && c.ItemId == selectedStoreItem.ItemId);
                     if (custodayItems != null)
                     {
                         custodayItems.Quantity -= diff;
@@ -91,12 +106,15 @@ namespace Inventory.Mostafa.Application.Return.Command.Update
 
                         _unitOfWork.Repository<CustodyItem, int>().Update(custodayItems);
                     }
-                    storeItem.OrderItem.ConsumedQuantity -= diff;
-                    if (storeItem.OrderItem.ConsumedQuantity < 0)
-                        return Result<ReturnDto>.Failure("Consumed quantity cannot be negative");
-                    if (storeItem.OrderItem.ConsumedQuantity > storeItem.OrderItem.Quantity)
-                        return Result<ReturnDto>.Failure("Consumed quantity cannot exceed ordered quantity");
-                    _unitOfWork.Repository<StoreReleaseItem, int>().Update(storeItem);
+                    selectedStoreItem.Quantity -= diff;
+                    if (selectedStoreItem.Quantity < 0)
+                        return Result<ReturnDto>.Failure("quantity cannot be negative");
+                    selectedItem.Quantity -= diff;
+                    if(selectedItem.Quantity < 0)
+                        return Result<ReturnDto>.Failure("quantity cannot be negative");
+
+                    _unitOfWork.Repository<StoreReleaseItem, int>().Update(selectedStoreItem);
+                    _unitOfWork.Repository<UnitExpenseItems, int>().Update(selectedItem);
                 }
 
             }
@@ -109,7 +127,7 @@ namespace Inventory.Mostafa.Application.Return.Command.Update
                 Id = returns.Id,
                 UnitName = unit.UnitName,
                 RecipintsName = recipints.Name,
-                ItemName = storeItem.OrderItem.ItemName,
+                ItemName = selectedStoreItem.OrderItem.ItemName,
                 DocumentUrl = returns.DocumentPath != null ? _configuration["BASEURL"] + returns.DocumentPath : null,
                 Quantity = returns.Quantity,
                 Reason = returns.Reason,

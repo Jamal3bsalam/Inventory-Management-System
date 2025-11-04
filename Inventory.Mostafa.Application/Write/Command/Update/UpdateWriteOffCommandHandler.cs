@@ -5,9 +5,11 @@ using Inventory.Mostafa.Domain.Entities;
 using Inventory.Mostafa.Domain.Entities.AssetsReturns;
 using Inventory.Mostafa.Domain.Entities.Identity;
 using Inventory.Mostafa.Domain.Entities.Store;
+using Inventory.Mostafa.Domain.Entities.UnitEx;
 using Inventory.Mostafa.Domain.Shared;
 using Inventory.Mostafa.Domain.Specification.Return;
 using Inventory.Mostafa.Domain.Specification.Store;
+using Inventory.Mostafa.Domain.Specification.UnitExp;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -43,9 +45,8 @@ namespace Inventory.Mostafa.Application.Write.Command.Update
             if (returns == null) return Result<WriteOffDto>.Failure("Return not found");
 
             // 3- هات الـ StoreItem عشان تعدل في الـ ConsumedQuantity
-            var spec = new StoreItemSpec(returns.storeReleaseItemId.Value,true);
-            var storeItem = await _unitOfWork.Repository<StoreReleaseItem, int>().GetWithSpecAsync(spec);
-            if (storeItem == null) return Result<WriteOffDto>.Failure("Store Item not found");
+            var expenseItemsSpec = new UnitExpenseItemSpec(returns.Expense.Id);
+            var expenseItems = await _unitOfWork.Repository<UnitExpenseItems, int>().GetWithSpecAsync(expenseItemsSpec);
 
             // 4- احسب الفرق بين الكمية القديمة والجديدة
             int oldQty = writeOff.Quantity.Value;
@@ -58,8 +59,8 @@ namespace Inventory.Mostafa.Application.Write.Command.Update
                 if (returns.Quantity < diff)
                     return Result<WriteOffDto>.Failure("Not enough quantity in return to write off");
 
-                returns.Quantity -= diff;                       // التالف زاد، المترجع يقل
-                storeItem.OrderItem.ConsumedQuantity += diff;   // التالف يتحسب كمستهلك
+                returns.Quantity -= diff;  // التالف زاد، المترجع يقل
+                returns.WriteOfQuantity = newQty;
             }
             else if (diff < 0)
             {
@@ -67,7 +68,7 @@ namespace Inventory.Mostafa.Application.Write.Command.Update
                 int restore = Math.Abs(diff);
 
                 returns.Quantity += restore;                    // بيرجع للمترجع
-                storeItem.OrderItem.ConsumedQuantity -= restore; // المستهلك يقل
+                returns.WriteOfQuantity = newQty;
             }
 
             // 5- عدل بيانات الـ WriteOff نفسه
@@ -87,7 +88,6 @@ namespace Inventory.Mostafa.Application.Write.Command.Update
 
             _unitOfWork.Repository<WriteOff, int>().Update(writeOff);
             _unitOfWork.Repository<Returns, int>().Update(returns);
-            _unitOfWork.Repository<StoreReleaseItem, int>().Update(storeItem);
 
             var result = await _unitOfWork.CompleteAsync();
             if (result <= 0) return Result<WriteOffDto>.Failure("Failed to update WriteOff");
@@ -98,7 +98,7 @@ namespace Inventory.Mostafa.Application.Write.Command.Update
                 Id = writeOff.Id,
                 UnitName = writeOff.Unit.UnitName,
                 RecipintsName = writeOff.Recipients.Name,
-                ItemName = storeItem.OrderItem.ItemName,
+                ItemName = expenseItems.Item.ItemsName,
                 Quantity = writeOff.Quantity,
                 DocumetPath = writeOff.DocumentPath != null ? _configuration["BASEURL"] + writeOff.DocumentPath : null
             };

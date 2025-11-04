@@ -6,9 +6,11 @@ using Inventory.Mostafa.Domain.Entities;
 using Inventory.Mostafa.Domain.Entities.AssetsReturns;
 using Inventory.Mostafa.Domain.Entities.Identity;
 using Inventory.Mostafa.Domain.Entities.Store;
+using Inventory.Mostafa.Domain.Entities.UnitEx;
 using Inventory.Mostafa.Domain.Shared;
 using Inventory.Mostafa.Domain.Specification.Return;
 using Inventory.Mostafa.Domain.Specification.Store;
+using Inventory.Mostafa.Domain.Specification.UnitExp;
 using Inventory.Mostafa.Domain.Specification.UnitSpecification;
 using MediatR;
 using Microsoft.Extensions.Configuration;
@@ -53,24 +55,18 @@ namespace Inventory.Mostafa.Application.Write.Command.Add
             var recipints = await _unitOfWork.Repository<Recipients, int>().GetWithSpecAsync(recipintsSpec);
             if (recipints == null) return Result<WriteOffDto>.Failure($"Recipints With Id: {request.RecipintsId} Not Fount");
 
-            var storeItemSpec = new StoreItemSpec(returnEntity.storeReleaseItemId.Value, true);
-            var storeItem = await _unitOfWork.Repository<StoreReleaseItem, int>().GetWithSpecAsync(storeItemSpec);
-            if (storeItem == null)
-                return Result<WriteOffDto>.Failure($"Store Item with Id: {returnEntity.storeReleaseItemId} not found.");
+            var expenseItemsSpec = new UnitExpenseItemSpec(returnEntity.Expense.Id);
+            var expenseItems = await _unitOfWork.Repository<UnitExpenseItems, int>().GetWithSpecAsync(expenseItemsSpec);
 
-            if(request.Quantity > returnEntity.Quantity)
+            if (request.Quantity > returnEntity.Quantity)
                 return Result<WriteOffDto>.Failure($"WriteOff quantity cannot be greater than returned quantity (Available: {returnEntity.Quantity}, Requested: {request.Quantity}).");
 
 
             // 1️⃣ قلل الكمية في الـ Return (لأن جزء منها اتسقط)
             returnEntity.Quantity -= request.Quantity;
+            returnEntity.WriteOfQuantity += request.Quantity;
             _unitOfWork.Repository<Returns, int>().Update(returnEntity);
 
-            // 2️⃣ زوّد ConsumedQuantity تاني (لأن التالف فعليًا مش بيرجع للمخزن)
-            storeItem.OrderItem.ConsumedQuantity += request.Quantity;
-            if (storeItem.OrderItem.ConsumedQuantity > storeItem.OrderItem.Quantity)
-                return Result<WriteOffDto>.Failure("Consumed quantity cannot exceed ordered quantity");
-            _unitOfWork.Repository<StoreReleaseItem, int>().Update(storeItem);
 
             var writeOff = new WriteOff()
             {
@@ -93,7 +89,7 @@ namespace Inventory.Mostafa.Application.Write.Command.Add
                 Id = writeOff.Id,
                 UnitName = unit.UnitName,
                 RecipintsName = recipints.Name,
-                ItemName = storeItem.OrderItem.ItemName,
+                ItemName = returnEntity.Item?.ItemsName,
                 Quantity = writeOff.Quantity,
                 DocumetPath = writeOff.DocumentPath != null ? _configuration["BASEURL"] + writeOff.DocumentPath : null
             };

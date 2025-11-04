@@ -49,7 +49,7 @@ namespace Inventory.Mostafa.Pl
                 app.UseSwagger();
                 app.UseSwaggerUI(options =>
                 {
-                    options.SwaggerEndpoint("/swagger/v1/swagger.json", "AncientAura API V1");
+                    options.SwaggerEndpoint("/swagger/v1/swagger.json", "Inventory Management System API V1");
                     options.RoutePrefix = ""; // ÌÃ⁄· Swagger «·’›Õ… «·«› —«÷Ì…
                 });
             }

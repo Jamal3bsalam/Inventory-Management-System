@@ -15,7 +15,7 @@ namespace Inventory.Mostafa.Application.Write.Command.Add
         public int? UnitId { get; set; }
         public int? RecipintsId { get; set; }
         public int? ReturnsId { get; set; }
-        public int? Quantity { get; set; }
+        public int Quantity { get; set; }
         public IFormFile? Documet { get; set; }
     }
 }

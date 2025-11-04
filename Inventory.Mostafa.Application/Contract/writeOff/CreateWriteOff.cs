@@ -19,6 +19,6 @@ namespace Inventory.Mostafa.Application.Contract.writeOff
         [Required(ErrorMessage = "Document Id Is Required")]
         public IFormFile? Document { get; set; }
         [Required(ErrorMessage = "Quantity Id Is Required")]
-        public int? Quantity { get; set; }
+        public int Quantity { get; set; }
     }
 }

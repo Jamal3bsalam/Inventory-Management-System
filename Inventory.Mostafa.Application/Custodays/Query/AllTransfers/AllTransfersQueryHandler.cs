@@ -43,17 +43,18 @@ namespace Inventory.Mostafa.Application.Custodays.Query.AllTransfers
 
             var returnsDto = transfers.Select(r => new TransactionDto()
             {
+                Id = r.Id,
                 UnitName = r.Unit?.UnitName,
                 OldRecipints = r.OldRecipient?.Name,
                 NewRecipints = r.NewRecipient?.Name,
-                ItemName = r.Item.ItemsName,
+                ItemName = r.Item?.ItemsName,
                 Quantity = r.Quantity,
                 TransactionDate = r.TransactionDate,
-                DocumentPath = r.DocumentPath != null ? _configuration["BASEURL"] + r.DocumentPath : null
+                DocumentPath = r.DocumentPath != null ? _configuration["BASEURL"] + r.DocumentPath : null,                
             });
             var pagintion = new Pagination<IEnumerable<TransactionDto>>(parameter.PageSize, parameter.PageIndex, counts, returnsDto);
 
-            return Result<Pagination<IEnumerable<TransactionDto>>>.Success(pagintion, "All Store Release Retrived Successfully.");
+            return Result<Pagination<IEnumerable<TransactionDto>>>.Success(pagintion, "All Transfers Retrived Successfully.");
         }
     }
 }

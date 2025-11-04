@@ -1,7 +1,12 @@
 ﻿using Inventory.Mostafa.Application.Abstraction.UnitOfWork;
+using Inventory.Mostafa.Application.Contract.Store;
+using Inventory.Mostafa.Domain.Entities.CustodayTables;
 using Inventory.Mostafa.Domain.Entities.Store;
+using Inventory.Mostafa.Domain.Entities.UnitEx;
 using Inventory.Mostafa.Domain.Shared;
+using Inventory.Mostafa.Domain.Specification.CustodaySpecificaion;
 using Inventory.Mostafa.Domain.Specification.Store;
+using Inventory.Mostafa.Domain.Specification.UnitExp;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -26,12 +31,54 @@ namespace Inventory.Mostafa.Application.Store.Command.Delete
             var spec = new StoreReleaseSpec(request.Id.Value);
             var storeRelease = await _unitOfWork.Repository<StoreRelease,int>().GetWithSpecAsync(spec);
 
+            var expenseSpec = new UnitExpenseSpec(request.Id.Value,true);
+            var expense = await _unitOfWork.Repository<UnitExpense, int>().GetWithSpecAsync(expenseSpec);
+            if (expense == null) return Result<string>.Failure($"No Store Release With This Id: {request.Id} In Units Expense");
+
+            var custodaySpec = new CustodaySpec(storeRelease.RecipientsId);
+            var custoday = await _unitOfWork.Repository<Custoday, int>().GetWithSpecAsync(custodaySpec);
+
             if (storeRelease == null) return Result<string>.Failure("There Is No StoreRelease With This Id");
 
             storeRelease.IsDeleted = true;
             storeRelease.DeletedAt = DateTime.UtcNow;
 
-            _unitOfWork.Repository<StoreRelease,int>().Update(storeRelease);    
+            expense.IsDeleted = true;
+            expense.DeletedAt = DateTime.UtcNow;
+
+            if (custoday != null)
+            {
+                foreach (var item in storeRelease.StoreReleaseItems)
+                {
+                    var custodayItems = custoday.CustodyItems.FirstOrDefault(c => c.CustodyId == custoday.Id && c.ItemId == item.ItemId);
+
+                    if (custodayItems != null)
+                    {
+                        custodayItems.Quantity -= item.Quantity;
+                        if (custodayItems.Quantity <= 0)
+                        {
+                            _unitOfWork.Repository<CustodyItem, int>().Delete(custodayItems);
+                        }
+                        else
+                        {
+                            _unitOfWork.Repository<CustodyItem, int>().Update(custodayItems);
+                        }
+                    }
+                }
+
+                if (!custoday.CustodyItems.Any())
+                {
+                    _unitOfWork.Repository<Custoday, int>().Delete(custoday);
+                }
+                else
+                {
+                    _unitOfWork.Repository<Custoday, int>().Update(custoday);
+                }
+            }
+
+            _unitOfWork.Repository<StoreRelease,int>().Update(storeRelease); 
+            _unitOfWork.Repository<UnitExpense,int>().Update(expense); 
+            
            var result = await _unitOfWork.CompleteAsync();
 
             if (result <= 0) return Result<string>.Failure("Faild To Delete Order");

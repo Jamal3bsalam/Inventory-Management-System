@@ -17,6 +17,23 @@ namespace Inventory.Mostafa.Domain.Specification.UnitExp
         {
             ApplyInclude();
         }
+
+        public UnitExpenseSpec(int recipintsId,bool flag1,bool flag2) : base(i => i.RecipientsId == recipintsId)
+        {
+            ApplyInclude();
+        }
+
+       
+
+        public UnitExpenseSpec(int storeReleaseId,bool flag) : base(i => i.StoreReleaseId == storeReleaseId)
+        {
+            ApplyInclude();
+        }
+
+        public UnitExpenseSpec(int UnitId, int RecipintsId) : base(i => i.UnitId == UnitId && i.RecipientsId == RecipintsId)
+        {
+            ApplyInclude();
+        }
         public UnitExpenseSpec(UnitExpenseParameter parameter) : base(S => S.IsDeleted != true && (string.IsNullOrEmpty(parameter.Search) || S.DocumentNumber.ToLower().Contains(parameter.Search)))
         {
 
@@ -24,6 +41,11 @@ namespace Inventory.Mostafa.Domain.Specification.UnitExp
             {
                 ApplyPagination((int)(parameter.PageSize * (parameter.PageIndex - 1)), (int)parameter.PageSize);
             }
+            ApplyInclude();
+        }
+
+        public UnitExpenseSpec(int unitId,DateOnly startDate, DateOnly endDate) : base(u => u.UnitId == unitId && u.ExpenseDate >= startDate && u.ExpenseDate <= endDate && u.IsDeleted != true)
+        {
             ApplyInclude();
         }
 

@@ -16,8 +16,10 @@ namespace Inventory.Mostafa.Application.Contract.Return
         public int? RecipintsId { get; set; }
         public IFormFile? Document { get; set; }
         [Required(ErrorMessage = "Store Release Item Id Is Required")]
-        public int? StoreReleaseItemId { get; set; }
-        [Required(ErrorMessage = "Quantity Id Is Required")]
+        public int? UnitExpenseId { get; set; }
+        [Required(ErrorMessage = "Item Id Is Required")]
+        public int? ItemId { get; set; }
+        [Required(ErrorMessage = "Quantity Is Required")]
         public int? Quantity { get; set; }
         [Required(ErrorMessage = "Reason Id Is Required")]
         public string? Reason { get; set; }

@@ -10,6 +10,7 @@ using Inventory.Mostafa.Application.UnitExp.Command.Delete;
 using Inventory.Mostafa.Application.UnitExp.Command.Update;
 using Inventory.Mostafa.Application.UnitExp.Command.Update.File;
 using Inventory.Mostafa.Application.UnitExp.Query.AllUnitExpense;
+using Inventory.Mostafa.Application.UnitExp.Query.Report;
 using Inventory.Mostafa.Application.Units.Command.Delete;
 using Inventory.Mostafa.Application.Units.Command.Update;
 using Inventory.Mostafa.Domain.Shared;
@@ -45,7 +46,7 @@ namespace Inventory.Mostafa.Pl.Controllers
             var getAllUnitExpensesQuery = parameter.Adapt<UnitsExpensesQuery>();
             getAllUnitExpensesQuery.Search = parameter.Search;
             var Releases = await _mediator.Send(getAllUnitExpensesQuery);
-            if (Releases == null) return BadRequest(new ErrorResponse(400, "Faild To Retrive All Orders"));
+            if (Releases == null) return BadRequest(new ErrorResponse(400, "Faild To Retrive All Unit Expenses"));
             return Ok(new ApiResponse<Pagination<IEnumerable<UnitExpensDto>>>(true, 200, "StoreRelease Retrived Successfully.", Releases.Data));
         }
 
@@ -105,6 +106,17 @@ namespace Inventory.Mostafa.Pl.Controllers
             var result = await _mediator.Send(unitCommand);
 
             return Ok(new ApiResponse<UnitExpensDto>(true, 200, result.Message, result.Data));
+        }
+
+        [HttpGet("Report")]
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = "Admin,User")]
+        [Cashed(60)]
+        public async Task<ActionResult<ApiResponse<IEnumerable<UnitExpensDto>>>> GetAllUnitExpensesForReportTime([FromQuery] TimeReportDto parameter)
+        {
+            var getAllUnitExpensesQuery = parameter.Adapt<ReportTimeQuery>();
+            var Releases = await _mediator.Send(getAllUnitExpensesQuery);
+            if (Releases == null) return BadRequest(new ErrorResponse(400, Releases.Message));
+            return Ok(new ApiResponse<IEnumerable<UnitExpensDto>>(true, 200,Releases.Message, Releases.Data));
         }
     }
 }

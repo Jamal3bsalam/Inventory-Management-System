@@ -15,6 +15,7 @@ namespace Inventory.Mostafa.Domain.Repositories
         Task AddAsync(TEntity entity);
         void Update(TEntity entity);
         void Delete(TEntity entity);
+        void DeleteRange(IEnumerable<TEntity> entities);
 
         Task<IEnumerable<TEntity>> GetAllWithSpecAsync(ISpecification<TEntity, Tkey> spec);
         Task<TEntity?> GetWithSpecAsync(ISpecification<TEntity, Tkey> spec);

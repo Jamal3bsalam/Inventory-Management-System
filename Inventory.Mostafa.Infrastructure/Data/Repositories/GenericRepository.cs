@@ -51,6 +51,11 @@ namespace Inventory.Mostafa.Infrastructure.Data.Repositories
              _context.Remove(entity); 
         }
 
+        public void DeleteRange(IEnumerable<TEntity> entities)
+        {
+            _context.RemoveRange(entities);
+        }
+
         public void Update(TEntity entity)
         {
             _context.Update(entity);

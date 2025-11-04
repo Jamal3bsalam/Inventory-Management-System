@@ -10,7 +10,8 @@ namespace Inventory.Mostafa.Domain.Enums
     {
         تعميد = 1,
         شراء = 2,
-        دعم = 3
+        دعم = 3,
+        رجيع = 4
 
     }
 }

@@ -2,6 +2,7 @@
 using Inventory.Mostafa.Domain.Repositories;
 using Inventory.Mostafa.Domain.Shared;
 using Inventory.Mostafa.Infrastructure.Data.Context;
+using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -21,6 +22,8 @@ namespace Inventory.Mostafa.Infrastructure.Data.Repositories
             _context = context;
             _repositories = new Hashtable();
         }
+
+        
         public async Task<int> CompleteAsync()
         {
             return await _context.SaveChangesAsync();
@@ -37,5 +40,17 @@ namespace Inventory.Mostafa.Infrastructure.Data.Repositories
 
             return _repositories[type] as IGenericRepository<TEntity, Tkey>;
         }
+
+        public async Task<IDbContextTransaction> BeginTransactionAsync()
+        {
+            return await _context.Database.BeginTransactionAsync();
+
+        }
+
+        public void Dispose()
+        {
+            _context.Dispose();
+        }
+
     }
 }

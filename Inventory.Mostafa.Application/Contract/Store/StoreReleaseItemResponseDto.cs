@@ -14,7 +14,7 @@ namespace Inventory.Mostafa.Application.Contract.Store
         public string? OrderNumber { get; set; }
         public string? OrderType { get; set; }
         public int? OrderItemId { get; set; }
-        public int Quantity { get; set; }
+        public int? Quantity { get; set; }
         public List<string>? SerialNumbers { get; set; }
     }
 }

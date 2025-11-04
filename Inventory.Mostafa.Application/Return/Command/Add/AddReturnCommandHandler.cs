@@ -6,9 +6,11 @@ using Inventory.Mostafa.Domain.Entities.AssetsReturns;
 using Inventory.Mostafa.Domain.Entities.CustodayTables;
 using Inventory.Mostafa.Domain.Entities.Identity;
 using Inventory.Mostafa.Domain.Entities.Store;
+using Inventory.Mostafa.Domain.Entities.UnitEx;
 using Inventory.Mostafa.Domain.Shared;
 using Inventory.Mostafa.Domain.Specification.CustodaySpecificaion;
 using Inventory.Mostafa.Domain.Specification.Store;
+using Inventory.Mostafa.Domain.Specification.UnitExp;
 using Inventory.Mostafa.Domain.Specification.UnitSpecification;
 using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -51,11 +53,37 @@ namespace Inventory.Mostafa.Application.Return.Command.Add
             var custodaySpec = new CustodaySpec(request.RecipintsId.Value);
             var custoday = await _unitOfWork.Repository<Custoday, int>().GetWithSpecAsync(custodaySpec);
 
-            var storeItemsSpec = new StoreItemSpec(request.StoreReleaseItemId.Value, true);
-            var storeItem = await _unitOfWork.Repository<StoreReleaseItem, int>().GetWithSpecAsync(storeItemsSpec);
-            if (storeItem == null) return Result<ReturnDto>.Failure($"Store Item With Id: {request.StoreReleaseItemId} Not Fount");
+            var unitExpenseSpec = new UnitExpenseSpec(request.UnitExpenseId.Value);
+            var unitExpense = await _unitOfWork.Repository<UnitExpense, int>().GetWithSpecAsync(unitExpenseSpec);
+            if (unitExpense == null) return Result<ReturnDto>.Failure($"Unit Expense With Id: {request.UnitExpenseId} Not Fount");
 
-            if(request.Quantity > storeItem.Quantity) return Result<ReturnDto>.Failure($"Return quantity cannot be greater than the released quantity(Available: {storeItem.Quantity}, Requested: {request.Quantity}).");
+            var expenseItemsSpec = new UnitExpenseItemSpec(unitExpense.Id);
+            var expenseItems = await _unitOfWork.Repository<UnitExpenseItems, int>().GetAllWithSpecAsync(expenseItemsSpec);
+
+            if (expenseItems == null) return Result<ReturnDto>.Failure($"Unit Expense Item For Unit Expense With Id: {request.UnitExpenseId} Not Fount");
+
+
+            var selectedItem = expenseItems.FirstOrDefault(i => i.ItemId == request.ItemId);
+
+            if (unitExpense.StoreReleaseId != null)
+            {
+                var storSpec = new StoreItemSpec(unitExpense.StoreReleaseId.Value);
+                var storeReleaseItem = await _unitOfWork.Repository<StoreReleaseItem, int>().GetAllWithSpecAsync(storSpec);
+                var selectedStoreReleaseItem = storeReleaseItem.FirstOrDefault(i => i.ItemId == request.ItemId);
+                if (selectedStoreReleaseItem == null) return Result<ReturnDto>.Failure("Faild to update Store Release Item Quantity.");
+                if (storeReleaseItem != null)
+                    if(request.Quantity > selectedStoreReleaseItem.Quantity) return Result<ReturnDto>.Failure($"Return quantity cannot be greater than the released quantity(Available: {selectedStoreReleaseItem.Quantity}, Requested: {request.Quantity}).");
+                        selectedStoreReleaseItem.Quantity -= request.Quantity;
+                _unitOfWork.Repository<StoreReleaseItem,int>().Update(selectedStoreReleaseItem);
+                if(selectedStoreReleaseItem.Quantity < 0)
+                {
+                    return Result<ReturnDto>.Failure($"The Returned Items Quantity Can Not be Grater Than Quantity In Unit Expense");
+                }
+
+            }
+
+               await _unitOfWork.CompleteAsync();
+
             if (request.Document != null)
             {
                 string fileName = _fileServices.Upload(request.Document);
@@ -67,21 +95,34 @@ namespace Inventory.Mostafa.Application.Return.Command.Add
             }
             returns.UnitId = request.UnitId;
             returns.RecipientsId = request.RecipintsId;
-            returns.storeReleaseItemId = request.StoreReleaseItemId;
+            returns.ExpenseId = request.UnitExpenseId;
             returns.Quantity = request.Quantity;
             returns.Reason = request.Reason;
+            returns.ItemId = request.ItemId;
 
             await _unitOfWork.Repository<Returns,int>().AddAsync(returns);
 
-            var custodayItems = custoday?.CustodyItems?.FirstOrDefault(c => c.CustodyId == custoday.Id && c.ItemId == storeItem.ItemId);
+           
+            if (selectedItem == null) return Result<ReturnDto>.Failure("Faild to update Unit Expense Item Quantity.");
+
+            var custodayItems = custoday?.CustodyItems?.FirstOrDefault(c => c.CustodyId == custoday.Id && c.ItemId == selectedItem.ItemId);
             if (custodayItems != null)
             {
                 custodayItems.Quantity -= request.Quantity;
                 _unitOfWork.Repository<CustodyItem, int>().Update(custodayItems);
+                if (custodayItems.Quantity <= 0) 
+                {
+                    _unitOfWork.Repository<CustodyItem, int>().Delete(custodayItems);
+                }
             }
-            storeItem.OrderItem.ConsumedQuantity -= request.Quantity;
-            _unitOfWork.Repository<StoreReleaseItem, int>().Update(storeItem);
 
+            if (request.Quantity > selectedItem.Quantity) return Result<ReturnDto>.Failure($"Return quantity cannot be greater than the released quantity(Available: {selectedItem.Quantity}, Requested: {request.Quantity}).");
+            selectedItem.Quantity -= request.Quantity;
+            _unitOfWork.Repository<UnitExpenseItems, int>().Update(selectedItem);
+            if (selectedItem.Quantity < 0)
+            {
+                return Result<ReturnDto>.Failure($"The Returned Items Quantity Can Not be Grater Than Quantity In Unit Expense");
+            }
             var result = await _unitOfWork.CompleteAsync();
             if (result <= 0) return Result<ReturnDto>.Failure("Faild To Add Returns");
 
@@ -90,7 +131,7 @@ namespace Inventory.Mostafa.Application.Return.Command.Add
                 Id = returns.Id,
                 UnitName = unit.UnitName,
                 RecipintsName = recipints.Name,
-                ItemName = storeItem.OrderItem.ItemName,
+                ItemName = selectedItem.Item.ItemsName,
                 DocumentUrl = returns.DocumentPath != null ? _configuration["BASEURL"] + returns.DocumentPath : null,
                 Quantity = returns.Quantity,
                 Reason = returns.Reason,

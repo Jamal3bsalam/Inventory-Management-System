@@ -10,15 +10,13 @@ using System.Threading.Tasks;
 
 namespace Inventory.Mostafa.Application.Custodays.Command
 {
-    public class TransactionCommand:IRequest<Result<CustodayDto>>
+    public class TransactionCommand:IRequest<Result<List<CustodayDto>>>
     {
-        public int? CustodayId { get; set; }
-        public int? UnitId { get; set; }
-        public int? ItemId { get; set; }
-        public int? NewRecipints { get; set; }
-        public int? Quantity { get; set; }
-        public DateOnly? TransactionDate { get; set; }
-        public IFormFile? File { get; set; }
+        public int UnitId { get; set; }
+        public int NewRecipints { get; set; }
+        public ICollection<CustodayItemDto>? Items { get; set; }
+        public DateOnly TransactionDate { get; set; }
+        public string? FileName { get; set; }
 
     }
 }

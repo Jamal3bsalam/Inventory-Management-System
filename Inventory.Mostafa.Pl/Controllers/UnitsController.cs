@@ -61,7 +61,7 @@ namespace Inventory.Mostafa.Pl.Controllers
 
         [HttpPut("{id}")]
         [Authorize(AuthenticationSchemes = "Bearer", Roles = "Admin")]
-        public async Task<ActionResult<ApiResponse<UnitDto>>> UpdateUnit(AddUnitDto updateUnit,int id)
+        public async Task<ActionResult<ApiResponse<UnitDto>>> UpdateUnit(UpdatUnitDto updateUnit,int id)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 

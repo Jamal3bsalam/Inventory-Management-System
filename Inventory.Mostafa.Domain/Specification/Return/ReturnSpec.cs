@@ -47,14 +47,18 @@ namespace Inventory.Mostafa.Domain.Specification.Return
             ApplyInclude();
         }
 
+        public ReturnSpec(int Recipints, bool flag1,bool flag2) : base(S => S.IsDeleted != true && S.RecipientsId == Recipints)
+        {
+            ApplyInclude();
+        }
+
         private void ApplyInclude()
         {
             Include.Add(r => r.Unit);
-            Include.Add(r => r.StoreReleaseItem);
             Include.Add(r => r.Recipients);
             Include.Add(r => r.WriteOffs);
-            IncludeStrings.Add($"{nameof(Returns.StoreReleaseItem)}.{nameof(StoreReleaseItem.OrderItem)}");
-
+            Include.Add(r => r.Expense);
+            Include.Add(r => r.Item);
         }
     }
 }

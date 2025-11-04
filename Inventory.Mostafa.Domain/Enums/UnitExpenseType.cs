@@ -10,5 +10,6 @@ namespace Inventory.Mostafa.Domain.Enums
     {
         نموذج_صرف = 1,
         مناقله = 2,
+        اخري = 3,
     }
 }

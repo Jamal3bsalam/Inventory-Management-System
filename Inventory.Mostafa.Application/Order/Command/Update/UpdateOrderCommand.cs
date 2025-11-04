@@ -15,7 +15,7 @@ namespace Inventory.Mostafa.Application.Order.Command.Update
     {
         public int? Id { get; set; }
         public OrderType? OrderType { get; set; }
-        public int? OrderNumber { get; set; }
+        public string? OrderNumber { get; set; }
         public IFormFile? File { get; set; }
     }
 }

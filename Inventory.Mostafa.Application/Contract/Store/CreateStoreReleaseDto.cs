@@ -15,7 +15,7 @@ namespace Inventory.Mostafa.Application.Contract.Store
         public int ReceiverId { get; set; }         // المستلم
         [Required(ErrorMessage = "Date Is Required")]
         public DateOnly ReleaseDate { get; set; }   // تاريخ الصرف
-        public int? DocumentNumber { get; set; }
+        public string? DocumentNumber { get; set; }
         [Required(ErrorMessage = "Document Is Required")]
         public string? DocumentPath { get; set; }
         [Required(ErrorMessage = "Items Is Required")]

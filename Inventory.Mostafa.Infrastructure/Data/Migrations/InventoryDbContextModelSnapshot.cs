@@ -36,8 +36,14 @@ namespace Inventory.Mostafa.Infrastructure.Data.Migrations
                     b.Property<string>("DocumentPath")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("ExpenseId")
+                        .HasColumnType("int");
+
                     b.Property<bool?>("IsDeleted")
                         .HasColumnType("bit");
+
+                    b.Property<int?>("ItemId")
+                        .HasColumnType("int");
 
                     b.Property<int?>("Quantity")
                         .HasColumnType("int");
@@ -48,19 +54,26 @@ namespace Inventory.Mostafa.Infrastructure.Data.Migrations
                     b.Property<int?>("RecipientsId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("StoreReleaseItemId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("UnitId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("storeReleaseItemId")
+                    b.Property<int>("WriteOfQuantity")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ExpenseId");
+
+                    b.HasIndex("ItemId");
+
                     b.HasIndex("RecipientsId");
 
-                    b.HasIndex("UnitId");
+                    b.HasIndex("StoreReleaseItemId");
 
-                    b.HasIndex("storeReleaseItemId");
+                    b.HasIndex("UnitId");
 
                     b.ToTable("Returns");
                 });
@@ -171,7 +184,7 @@ namespace Inventory.Mostafa.Infrastructure.Data.Migrations
                     b.Property<string>("DocumentPath")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ItemId")
+                    b.Property<int?>("ItemId")
                         .HasColumnType("int");
 
                     b.Property<int>("NewRecipientId")
@@ -634,7 +647,7 @@ namespace Inventory.Mostafa.Infrastructure.Data.Migrations
                     b.Property<int?>("OrderItemId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Quantity")
+                    b.Property<int?>("Quantity")
                         .HasColumnType("int");
 
                     b.Property<int>("StoreReleaseId")
@@ -668,7 +681,7 @@ namespace Inventory.Mostafa.Infrastructure.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("DocumentNumber")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateOnly?>("ExpenseDate")
                         .HasColumnType("date");
@@ -682,14 +695,13 @@ namespace Inventory.Mostafa.Infrastructure.Data.Migrations
                     b.Property<int?>("RecipientsId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("StoreReleaseId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("UnitId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("DocumentNumber")
-                        .IsUnique()
-                        .HasFilter("[DocumentNumber] IS NOT NULL");
 
                     b.HasIndex("RecipientsId");
 
@@ -862,24 +874,34 @@ namespace Inventory.Mostafa.Infrastructure.Data.Migrations
 
             modelBuilder.Entity("Inventory.Mostafa.Domain.Entities.AssetsReturns.Returns", b =>
                 {
+                    b.HasOne("Inventory.Mostafa.Domain.Entities.UnitEx.UnitExpense", "Expense")
+                        .WithMany("Returns")
+                        .HasForeignKey("ExpenseId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("Inventory.Mostafa.Domain.Entities.Items", "Item")
+                        .WithMany()
+                        .HasForeignKey("ItemId");
+
                     b.HasOne("Inventory.Mostafa.Domain.Entities.Recipients", "Recipients")
                         .WithMany("Returns")
                         .HasForeignKey("RecipientsId")
                         .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("Inventory.Mostafa.Domain.Entities.Store.StoreReleaseItem", null)
+                        .WithMany("Returns")
+                        .HasForeignKey("StoreReleaseItemId");
 
                     b.HasOne("Inventory.Mostafa.Domain.Entities.Identity.Unit", "Unit")
                         .WithMany("Returns")
                         .HasForeignKey("UnitId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("Inventory.Mostafa.Domain.Entities.Store.StoreReleaseItem", "StoreReleaseItem")
-                        .WithMany("Returns")
-                        .HasForeignKey("storeReleaseItemId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                    b.Navigation("Expense");
+
+                    b.Navigation("Item");
 
                     b.Navigation("Recipients");
-
-                    b.Navigation("StoreReleaseItem");
 
                     b.Navigation("Unit");
                 });
@@ -932,8 +954,7 @@ namespace Inventory.Mostafa.Infrastructure.Data.Migrations
                     b.HasOne("Inventory.Mostafa.Domain.Entities.Items", "Item")
                         .WithMany("CustodayTransfers")
                         .HasForeignKey("ItemId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("Inventory.Mostafa.Domain.Entities.Recipients", "NewRecipient")
                         .WithMany("NewTransfers")
@@ -1299,6 +1320,8 @@ namespace Inventory.Mostafa.Infrastructure.Data.Migrations
             modelBuilder.Entity("Inventory.Mostafa.Domain.Entities.UnitEx.UnitExpense", b =>
                 {
                     b.Navigation("ExpenseItems");
+
+                    b.Navigation("Returns");
                 });
 #pragma warning restore 612, 618
         }

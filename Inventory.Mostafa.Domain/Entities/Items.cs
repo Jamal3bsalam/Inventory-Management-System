@@ -25,5 +25,6 @@ namespace Inventory.Mostafa.Domain.Entities
         public ICollection<StockTransaction>? StockTransactions { get; set; }
         public ICollection<UnitExpenseItems>? UnitExpenseItems { get; set; }
         public ICollection<CustodayTransfers>? CustodayTransfers { get; set; }
+
     }
 }
