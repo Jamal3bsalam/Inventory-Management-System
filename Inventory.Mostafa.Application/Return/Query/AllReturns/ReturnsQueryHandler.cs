@@ -42,6 +42,7 @@ namespace Inventory.Mostafa.Application.Return.Query.AllReturns
 
             if (returns == null) return Result<Pagination<IEnumerable<AllReturnDto>>>.Failure("Faild To Retrived All Returns.");
 
+
             var returnsDto = returns.Select(r => new AllReturnDto()
             {
                 Id = r.Id,
@@ -49,6 +50,7 @@ namespace Inventory.Mostafa.Application.Return.Query.AllReturns
                 RecipintsName = r.Recipients?.Name,
                 ItemName = r.Item?.ItemsName,
                 DocumentUrl = r.DocumentPath != null ? _configuration["BASEURL"] + r.DocumentPath : null,
+                DocumentNumber = r.Expense?.DocumentNumber,
                 OriginalQuantity = r.Quantity + r.WriteOfQuantity,
                 WriteOfQuantity = r.WriteOfQuantity,
                 Quantity = r.Quantity,

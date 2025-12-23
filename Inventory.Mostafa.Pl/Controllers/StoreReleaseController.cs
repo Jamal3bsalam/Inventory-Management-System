@@ -10,7 +10,9 @@ using Inventory.Mostafa.Application.Store.Command.Delete;
 using Inventory.Mostafa.Application.Store.Command.Update;
 using Inventory.Mostafa.Application.Store.Command.Update.File;
 using Inventory.Mostafa.Application.Store.Query.AllStoreRelease;
+using Inventory.Mostafa.Application.Store.Query.Search;
 using Inventory.Mostafa.Application.UnitExp.Command.Update;
+using Inventory.Mostafa.Application.Units.Query.RecipintsSearch;
 using Inventory.Mostafa.Domain.Entities.Store;
 using Inventory.Mostafa.Domain.Shared;
 using Inventory.Mostafa.Domain.Specification;
@@ -103,6 +105,17 @@ namespace Inventory.Mostafa.Pl.Controllers
             var result = await _mediator.Send(storeCommand);
 
             return Ok(new ApiResponse<StoreReleaseDto>(true, 200, result.Message, result.Data));
+        }
+
+        [HttpGet("serialNumber/search")]
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = "Admin")]
+        public async Task<ActionResult<ApiResponse<SerialNumbersSearchDto>>> SerialNumbersSearch(string search)
+        {
+            var getSerialsDetails = new SerialNumbersSearchQuery() { SerialNumber = search };
+            var result = await _mediator.Send(getSerialsDetails);
+            if (result == null) return BadRequest(new ErrorResponse(400, result.Message));
+
+            return Ok(new ApiResponse<SerialNumbersSearchDto>(true, 200, result.Message, result.Data));
         }
 
     }

@@ -10,7 +10,9 @@ namespace Inventory.Mostafa.Application.Contract.Auth
 {
     public class UpdateUserDto
     {
+        public string? FullName { get; set; }
         public string? UserName { get; set; }
+        public string? Email { get; set; }
         public Roles? Roles { get; set; }
     }
 }

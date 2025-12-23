@@ -17,5 +17,6 @@ namespace Inventory.Mostafa.Application.Contract.Return
         public int? OriginalQuantity { get; set; }
         public string? Reason { get; set; }
         public string? DocumentUrl { get; set; }
+        public string? DocumentNumber { get; set; }
     }
 }

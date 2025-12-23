@@ -12,7 +12,9 @@ namespace Inventory.Mostafa.Application.User.Command.Add
 {
     public class AddUserCommand : IRequest<Result<UserDto>>
     {
+        public string? FullName { get; set; }
         public string? UserName { get; set; }
+        public string Email { get; set; }
         public Roles Roles { get; set; }
         public string? Password { get; set; }
     }

@@ -9,5 +9,6 @@ namespace Inventory.Mostafa.Domain.Entities.Identity
 {
     public class AppUser : IdentityUser<int>
     {
+        public string FullName { get; set; }
     }
 }

@@ -41,8 +41,13 @@ namespace Inventory.Mostafa.Pl
             //if (app.Environment.IsDevelopment())
             //{
             //    app.UseSwagger();
-            //    app.UseSwaggerUI();
+            //    app.UseSwaggerUI(c =>
+            //    {
+            //        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Inventory Management System API V1");
+            //        c.RoutePrefix = "";
+            //    });
             //}
+
 
             if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
             {
@@ -61,6 +66,9 @@ namespace Inventory.Mostafa.Pl
 
             app.UseStaticFiles();
             app.MapControllers();
+
+            app.Urls.Add("http://0.0.0.0:5000"); // ·ﬂ· «·√ÃÂ“…
+
 
             app.Run();
 

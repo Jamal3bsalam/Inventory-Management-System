@@ -1,4 +1,5 @@
 ﻿using Inventory.Mostafa.Domain.Entities;
+using Inventory.Mostafa.Domain.Specification.ITemSpecification;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace Inventory.Mostafa.Domain.Specification
 {
     public class ItemCountSpecifications:Specifications<Items,int>
     {
-        public ItemCountSpecifications(SpecParameter specParameters) : base(S => S.IsDeleted != true && (string.IsNullOrEmpty(specParameters.Search) || S.ItemsName.ToLower().Contains(specParameters.Search)))
+        public ItemCountSpecifications(ItemSpecParameter specParameters) : base(S => S.IsDeleted != true && (string.IsNullOrEmpty(specParameters.Search) || S.ItemsName.ToLower().Contains(specParameters.Search)))
         {
         }
     }

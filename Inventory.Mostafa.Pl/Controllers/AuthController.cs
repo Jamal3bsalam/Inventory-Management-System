@@ -7,6 +7,8 @@ using Mapster;
 using Inventory.Mostafa.Domain.Shared;
 using Inventory.Mostafa.Pl.Response.Error;
 using Inventory.Mostafa.Application.User.Command.LogIn;
+using Inventory.Mostafa.Application.User.Command.Reset;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Inventory.Mostafa.Pl.Controllers
 {
@@ -30,6 +32,18 @@ namespace Inventory.Mostafa.Pl.Controllers
             var user = await _mediator.Send(loginCommand);
             if (user == null) return BadRequest(new ErrorResponse(400,user.Message));
             return Ok(new ApiResponse<AuthDto>(true, 200, user.Message, user.Data));
+        }
+
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = "Admin")]
+        [HttpPost("reset-password")]
+        public async Task<ActionResult<ApiResponse<string>>> ResetPassword(ResetPassword dto)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            var resetCommand = dto.Adapt<ResetPasswordCommand>();
+
+            var result = await _mediator.Send(resetCommand);
+            if (result == null) return BadRequest(new ErrorResponse(400, result.Message));
+            return Ok(new ApiResponse<string>(true, 200, result.Message, result.Data));
         }
     }
 }

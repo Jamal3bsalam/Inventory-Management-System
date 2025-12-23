@@ -25,6 +25,7 @@ namespace Inventory.Mostafa.Domain.Specification.Store
             Include.Add(O => O.Items);
             Include.Add(s => s.Order);
             Include.Add(s => s.OrderItem);
+            Include.Add(s => s.SerialNumbers);
         }
 
     }

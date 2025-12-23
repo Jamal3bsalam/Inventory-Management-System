@@ -16,6 +16,7 @@ namespace Inventory.Mostafa.Domain.Specification.UnitSpecification
 
         public RecipintsSpec(int unitId,bool flag) : base(i => i.UnitId == unitId)
         {
+            AddOrderBy(r => r.Name);
             ApplyInclude();
         }
 

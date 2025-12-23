@@ -32,7 +32,7 @@ namespace Inventory.Mostafa.Infrastructure.Data.Repositories
         {
             if(typeof(TEntity) == typeof(OrderItems))
             {
-                return (TEntity)(Object)await _context.OrderItems.FirstOrDefaultAsync(s => s.Id == (int)(object)Id);
+                return (TEntity)(Object)await _context.OrderItems.Include(o => o.SerialNumbers).FirstOrDefaultAsync(s => s.Id == (int)(object)Id);
 
             }
             if (typeof(TEntity) == typeof(StockTransaction))

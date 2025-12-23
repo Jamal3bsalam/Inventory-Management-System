@@ -25,7 +25,7 @@ namespace Inventory.Mostafa.Application.ITem.Query.AllItems
         }
         public async Task<Pagination<IEnumerable<ItemDto>>> Handle(AllItemsQuery request, CancellationToken cancellationToken)
         {
-            var parameter = request.Adapt<SpecParameter>();
+            var parameter = request.Adapt<ItemSpecParameter>();
             var spec = new ItemSpec(parameter);
             var count = new ItemCountSpecifications(parameter);
             var items = await _unitOfWork.Repository<Items, int>().GetAllWithSpecAsync(spec);

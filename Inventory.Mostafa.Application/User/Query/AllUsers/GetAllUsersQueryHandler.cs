@@ -30,7 +30,7 @@ namespace Inventory.Mostafa.Application.User.Query.AllUsers
                 var currentRole = await _userManager.GetRolesAsync(user);
                 foreach (var role in currentRole)
                 {
-                    usersDto.Add(new UsersDto() { Id = user.Id, Role = role, UserName = user.UserName });
+                    usersDto.Add(new UsersDto() { Id = user.Id, Role = role, UserName = user.UserName,FullName = user.FullName,Email = user.Email });
                 }
             }
 

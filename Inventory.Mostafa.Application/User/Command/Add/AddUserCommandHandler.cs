@@ -26,9 +26,17 @@ namespace Inventory.Mostafa.Application.User.Command.Add
             if (string.IsNullOrEmpty(request.UserName) || string.IsNullOrEmpty(request.Password) || string.IsNullOrEmpty(request.Roles.ToString())) return Result<UserDto>.Failure("Please fill all required fields correctly");
             if (await CheckUserNameExist(request.UserName)) return Result<UserDto>.Failure("UserName Already Exist");
 
+            var userEmail = await _userManager.FindByEmailAsync(request.Email);
+            if(userEmail != null)
+            {
+                return Result<UserDto>.Failure("Email Already Exist.");
+            }
+
             var user = new AppUser()
             {
-                UserName = request.UserName,    
+                UserName = request.UserName, 
+                Email = request.Email,
+                FullName = request.FullName
             };
 
             await _userManager.CreateAsync(user,request.Password);

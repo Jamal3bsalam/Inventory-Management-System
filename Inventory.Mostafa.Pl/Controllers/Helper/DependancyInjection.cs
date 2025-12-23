@@ -1,4 +1,5 @@
 ﻿using Inventory.Mostafa.Application.Abstraction.Cash;
+using Inventory.Mostafa.Application.Abstraction.DataBase;
 using Inventory.Mostafa.Application.Abstraction.Files;
 using Inventory.Mostafa.Application.Abstraction.Token;
 using Inventory.Mostafa.Application.Abstraction.UnitOfWork;
@@ -8,6 +9,7 @@ using Inventory.Mostafa.Infrastructure.Data.Context;
 using Inventory.Mostafa.Infrastructure.Data.Repositories;
 using Inventory.Mostafa.Infrastructure.Data.Seed;
 using Inventory.Mostafa.Infrastructure.Service.Cashe;
+using Inventory.Mostafa.Infrastructure.Service.DataBase;
 using Inventory.Mostafa.Infrastructure.Service.Files;
 using Inventory.Mostafa.Infrastructure.Service.Token;
 using Mapster;
@@ -62,6 +64,7 @@ namespace Inventory.Mostafa.Pl.Controllers.Helper
             });
             services.AddMemoryCache();
             services.AddScoped<ICashService, CasheService>();
+            services.AddScoped<IDataBaseBackUpService, DataBaseBackUpService>();
             return services;
         }
 

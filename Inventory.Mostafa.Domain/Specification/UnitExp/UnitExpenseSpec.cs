@@ -44,12 +44,7 @@ namespace Inventory.Mostafa.Domain.Specification.UnitExp
             ApplyInclude();
         }
 
-        public UnitExpenseSpec(int unitId,DateOnly startDate, DateOnly endDate) : base(u => u.UnitId == unitId && u.ExpenseDate >= startDate && u.ExpenseDate <= endDate && u.IsDeleted != true)
-        {
-            ApplyInclude();
-        }
-
-        public UnitExpenseSpec(UnitExpenseParameter parameter, bool flag) : base(S => S.IsDeleted != true && S.UnitId == parameter.UnitId && (string.IsNullOrEmpty(parameter.Search) || S.DocumentNumber.ToLower().Contains(parameter.Search)))
+        public UnitExpenseSpec(UnitExpenseParameter parameter,bool flag) : base(S => S.IsDeleted != true && S.UnitId == parameter.UnitId)
         {
 
             if (parameter.PageIndex.HasValue && parameter.PageSize.HasValue)
@@ -58,6 +53,13 @@ namespace Inventory.Mostafa.Domain.Specification.UnitExp
             }
             ApplyInclude();
         }
+
+        public UnitExpenseSpec(int unitId,DateOnly startDate, DateOnly endDate) : base(u => u.UnitId == unitId && u.ExpenseDate >= startDate && u.ExpenseDate <= endDate && u.IsDeleted != true)
+        {
+            ApplyInclude();
+        }
+
+       
 
         //public OrderSpec(SpecParameter specParameters) : base(S => S.IsDeleted != true && (string.IsNullOrEmpty(specParameters.Search) || S.OrderNumber.ToLower().Contains(specParameters.Search)))
         //{

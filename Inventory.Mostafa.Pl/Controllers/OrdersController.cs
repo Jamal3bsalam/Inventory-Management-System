@@ -7,6 +7,7 @@ using Inventory.Mostafa.Application.Order.Command.Add;
 using Inventory.Mostafa.Application.Order.Command.Add.Attachment;
 using Inventory.Mostafa.Application.Order.Command.Delete;
 using Inventory.Mostafa.Application.Order.Command.Update;
+using Inventory.Mostafa.Application.Order.Command.Update.File;
 using Inventory.Mostafa.Application.Order.Query.AllOrders;
 using Inventory.Mostafa.Application.Order.Query.AllOrdersForSpecificType;
 using Inventory.Mostafa.Application.Units.Command.Add;
@@ -83,13 +84,24 @@ namespace Inventory.Mostafa.Pl.Controllers
             return Ok(new ApiResponse<Result<string>>(true,200,"File Uploaded Successfully",result));
         }
 
+        [HttpPut("attachment")]
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = "Admin")]
+        public async Task<ActionResult<Result<string>>> UpdateAttachment(int orderId, IFormFile file)
+        {
+            var fileCommand = new UpdateFileCommand() { Id = orderId, File = file };
+            var result = await _mediator.Send(fileCommand);
+            if (result == null) return BadRequest(new ErrorResponse(400, result.Message));
+
+            return Ok(new ApiResponse<Result<string>>(true, 200, "File Updated Successfully", result));
+        }
+
         [HttpPut]
         [Authorize(AuthenticationSchemes = "Bearer", Roles = "Admin")]
         public async Task<ActionResult<ApiResponse<OrderDto>>> UpdateOrder(UpdateOrderDto update)
         {
             if(!ModelState.IsValid) return BadRequest(ModelState);
 
-            var orderCommand = new UpdateOrderCommand() { Id = update.Id,OrderNumber = update.OrderNumber,OrderType =update.OrderType, File = update.File};
+            var orderCommand = new UpdateOrderCommand() { Id = update.Id,OrderNumber = update.OrderNumber,OrderType =update.OrderType, File = update.File,SupplierName = update.SupplierName,Items = update.Items};
             var order = await _mediator.Send(orderCommand);
             if (order.Data == null) return BadRequest(new ErrorResponse(400,order.Message));
 

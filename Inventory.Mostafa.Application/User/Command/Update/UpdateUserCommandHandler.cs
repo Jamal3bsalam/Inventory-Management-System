@@ -32,16 +32,26 @@ namespace Inventory.Mostafa.Application.User.Command.Update
 
             if(!string.IsNullOrEmpty(request.UserName))
                 user.UserName = request.UserName;
-            if(request.Roles != null)
+
+            if (!string.IsNullOrEmpty(request.FullName))
+                user.FullName = request.FullName;
+
+            if (!string.IsNullOrEmpty(request.Email))
+            {
+                user.Email = request.Email; 
+            }
+
+            if (request.Roles != null)
             {
                 var currentRole = await _userManager.GetRolesAsync(user);
                 await _userManager.RemoveFromRolesAsync(user,currentRole);
+                await _userManager.AddToRoleAsync(user,request.Roles.ToString());
             }
             await _userManager.UpdateAsync(user);
-            await _userManager.AddToRoleAsync(user,request.Roles.ToString());
 
             var userDto = user.Adapt<UserDto>();
-            userDto.Role = request.Roles.ToString();
+            var role = await _userManager.GetRolesAsync(user);
+            userDto.Role = role.FirstOrDefault();
 
             return Result<UserDto>.Success(userDto,"User Updated Successfully.");
 

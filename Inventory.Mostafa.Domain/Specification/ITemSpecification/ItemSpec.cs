@@ -14,13 +14,15 @@ namespace Inventory.Mostafa.Domain.Specification.ITemSpecification
         {
         }
 
-        public ItemSpec(SpecParameter specParameters) : base(S => S.IsDeleted != true && (string.IsNullOrEmpty(specParameters.Search) || S.ItemsName.ToLower().Contains(specParameters.Search)))
+        public ItemSpec(ItemSpecParameter specParameters) : base(S => S.IsDeleted != true && (string.IsNullOrEmpty(specParameters.Search) || S.ItemsName.ToLower().Contains(specParameters.Search)))
         {
+            AddOrderBy(I => I.ItemsName);
 
             if (specParameters.pageIndex.HasValue && specParameters.pageSize.HasValue)
             {
                 ApplyPagination(specParameters.pageSize.Value * (specParameters.pageIndex.Value - 1), specParameters.pageSize.Value);
             }
         }
+
     }
 }

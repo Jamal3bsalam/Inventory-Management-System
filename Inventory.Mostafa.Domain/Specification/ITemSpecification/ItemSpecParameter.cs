@@ -1,17 +1,14 @@
-﻿using Inventory.Mostafa.Application.Contract.ITem;
-using Inventory.Mostafa.Domain.Shared;
-using MediatR;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Inventory.Mostafa.Application.ITem.Query.AllItems
+namespace Inventory.Mostafa.Domain.Specification.ITemSpecification
 {
-    public class AllItemsQuery : IRequest<Pagination<IEnumerable<ItemDto>>>
+    public class ItemSpecParameter
     {
-        public int? pageSize { get; set; } = 10;
+        public int? pageSize { get; set; }
         public int? pageIndex { get; set; } = 1;
         //public string? OrderBy { get; set; } = "ItemsName";
 

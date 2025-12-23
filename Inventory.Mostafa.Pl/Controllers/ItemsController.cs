@@ -36,7 +36,7 @@ namespace Inventory.Mostafa.Pl.Controllers
         [HttpGet]
         [Authorize(AuthenticationSchemes = "Bearer", Roles = "Admin,User")]
         [Cashed(60)]
-        public async Task<ActionResult<ApiResponse<Pagination<IEnumerable<ItemDto>>>>> GetAllItems([FromQuery]SpecParameter specParameter)
+        public async Task<ActionResult<ApiResponse<Pagination<IEnumerable<ItemDto>>>>> GetAllItems([FromQuery]ItemSpecParameter specParameter)
         {
             var getAllItemsQuery = specParameter.Adapt<AllItemsQuery>();
             var result = await _mediator.Send(getAllItemsQuery);
