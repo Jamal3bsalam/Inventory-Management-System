@@ -42,6 +42,8 @@ namespace Inventory.Mostafa.Application.Store.Query.Search
                 ItemName = storeItem.Items.ItemsName,
                 DocumentNumber = store.DocumentNumber,
                 OrderNumber = storeItem.Order.OrderNumber,
+                SupplierName = storeItem.Order.SupplierName,
+                OrderDate = storeItem.Order.OrderDate,
                 SerialNumber = request.SerialNumber
             };
 

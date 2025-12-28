@@ -34,7 +34,7 @@ namespace Inventory.Mostafa.Pl.Controllers
             return Ok(new ApiResponse<AuthDto>(true, 200, user.Message, user.Data));
         }
 
-        [Authorize(AuthenticationSchemes = "Bearer", Roles = "Admin")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpPost("reset-password")]
         public async Task<ActionResult<ApiResponse<string>>> ResetPassword(ResetPassword dto)
         {

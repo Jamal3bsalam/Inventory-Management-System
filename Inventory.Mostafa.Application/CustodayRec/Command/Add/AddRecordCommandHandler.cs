@@ -30,6 +30,7 @@ namespace Inventory.Mostafa.Application.CustodayRec.Command.Add
             if (request.Notic == null) return Result<RecordDto>.Failure("Please Enter A Valid Notice");
             if (request.File.Length == 0 && string.IsNullOrEmpty(request.File.Name)) return Result<RecordDto>.Failure("No File Uploaded");
 
+
             var file = _fileServices.Upload(request.File);
             
 

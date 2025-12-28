@@ -12,6 +12,8 @@ namespace Inventory.Mostafa.Application.Contract.Store
         public string? ItemName { get; set; }
         public string? DocumentNumber { get; set; }
         public string? OrderNumber { get; set; }
+        public string? SupplierName { get; set; }
+        public DateOnly OrderDate { get; set; }
         public string? SerialNumber { get; set; }
     }
 }
