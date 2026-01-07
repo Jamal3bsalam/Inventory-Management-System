@@ -1,11 +1,7 @@
 ﻿using Inventory.Mostafa.Application.Abstraction.DataBase;
+using Inventory.Mostafa.Domain.Shared;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Inventory.Mostafa.Infrastructure.Service.DataBase
 {
@@ -48,31 +44,16 @@ namespace Inventory.Mostafa.Infrastructure.Service.DataBase
         //    return fullPath;
         //}
 
-        public async Task<string> CreateBackupAsync(string folderPath)
+        public async Task<Result<string>> CreateBackupAsync(string folderPath)
         {
             if (string.IsNullOrWhiteSpace(folderPath))
                 throw new Exception("Folder path is required");
 
             var root = Path.GetPathRoot(folderPath);
 
-            if (root is null ||
-               !(root.Equals(@"C:\", StringComparison.OrdinalIgnoreCase) ||
-                 root.Equals(@"D:\", StringComparison.OrdinalIgnoreCase)))
+            if (root is null )
             {
-                throw new Exception("Backup must be on drive C or D");
-            }
-
-            var forbiddenFolders = new[]
-            {
-                 @"C:\Windows",
-                 @"C:\Program Files",
-                 @"C:\Program Files (x86)"
-            };
-
-            if (forbiddenFolders.Any(f =>
-                folderPath.StartsWith(f, StringComparison.OrdinalIgnoreCase)))
-            {
-                throw new Exception("You cannot backup to system folders");
+                return Result<string>.Failure("Invalid folder path");
             }
 
             if (!Directory.Exists(folderPath))
@@ -92,7 +73,7 @@ namespace Inventory.Mostafa.Infrastructure.Service.DataBase
             using var command = new SqlCommand(sql, connection);
             await command.ExecuteNonQueryAsync();
 
-            return fullPath;
+            return Result<string>.Success(fullPath);
         }
 
 
