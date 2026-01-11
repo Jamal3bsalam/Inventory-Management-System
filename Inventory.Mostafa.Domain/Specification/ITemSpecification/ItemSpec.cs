@@ -14,7 +14,7 @@ namespace Inventory.Mostafa.Domain.Specification.ITemSpecification
         {
         }
 
-        public ItemSpec(ItemSpecParameter specParameters) : base(S => S.IsDeleted != true && (string.IsNullOrEmpty(specParameters.Search) || S.ItemsName.ToLower().Contains(specParameters.Search)))
+        public ItemSpec(ItemSpecParameter specParameters) : base(S => S.IsDeleted != true && (string.IsNullOrEmpty(specParameters.Search) || S.ItemsName.ToLower().Contains(specParameters.Search)) && (specParameters.year == null || S.CreatedAt.Year == specParameters.year))
         {
             AddOrderBy(I => I.ItemsName);
 

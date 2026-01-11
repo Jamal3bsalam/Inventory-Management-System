@@ -16,6 +16,7 @@ namespace Inventory.Mostafa.Application.Order.Command.Update
         public int? Id { get; set; }
         public string? OrderType { get; set; }
         public string? OrderNumber { get; set; }
+        public string? RecipintName { get; set; }
         public string? SupplierName { get; set; }
         public string? File { get; set; }
         public List<CreateOrderItem>? Items { get; set; } = new();

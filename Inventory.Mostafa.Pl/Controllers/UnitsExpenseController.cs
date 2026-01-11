@@ -10,6 +10,7 @@ using Inventory.Mostafa.Application.UnitExp.Command.Delete;
 using Inventory.Mostafa.Application.UnitExp.Command.Update;
 using Inventory.Mostafa.Application.UnitExp.Command.Update.File;
 using Inventory.Mostafa.Application.UnitExp.Query.AllUnitExpense;
+using Inventory.Mostafa.Application.UnitExp.Query.AllUnitExpenseWithCustodaysFiles;
 using Inventory.Mostafa.Application.UnitExp.Query.Report;
 using Inventory.Mostafa.Application.Units.Command.Delete;
 using Inventory.Mostafa.Application.Units.Command.Update;
@@ -47,7 +48,19 @@ namespace Inventory.Mostafa.Pl.Controllers
             getAllUnitExpensesQuery.Search = parameter.Search;
             var Releases = await _mediator.Send(getAllUnitExpensesQuery);
             if (Releases == null) return BadRequest(new ErrorResponse(400, "Faild To Retrive All Unit Expenses"));
-            return Ok(new ApiResponse<Pagination<IEnumerable<UnitExpensDto>>>(true, 200, "StoreRelease Retrived Successfully.", Releases.Data));
+            return Ok(new ApiResponse<Pagination<IEnumerable<UnitExpensDto>>>(true, 200, "Unit Expense Retrived Successfully.", Releases.Data));
+        }
+
+        [HttpGet("Details")]
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = "Admin,User")]
+        [Cashed(60)]
+        public async Task<ActionResult<ApiResponse<Pagination<IEnumerable<UnitExpenseDetailsDto>>>>> GetAllUnitExpensesDetails([FromQuery] UnitExpenseParameter parameter)
+        {
+            var getAllUnitExpensesQuery = parameter.Adapt<AllQuery>();
+            getAllUnitExpensesQuery.Search = parameter.Search;
+            var Releases = await _mediator.Send(getAllUnitExpensesQuery);
+            if (Releases == null) return BadRequest(new ErrorResponse(400, "Faild To Retrive All Unit Expenses"));
+            return Ok(new ApiResponse<Pagination<IEnumerable<UnitExpenseDetailsDto>>>(true, 200, "Unit Expense Details Retrived Successfully.", Releases.Data));
         }
 
         [HttpPost]

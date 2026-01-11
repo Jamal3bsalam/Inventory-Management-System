@@ -34,6 +34,7 @@ namespace Inventory.Mostafa.Application.Order.Command.Add
                 OrderNumber = request.OrderNumber,
                 OrderType = request.OrderType.Value.ToString(),
                 SupplierName = request.SupplierName,
+                RecipintName = request.RecipintName,
                 OrderDate = request.OrderDate,
                 Attachment = $"\\Files\\OrdersAttachment\\{request.Attachment}",
                 OrderItems = new List<OrderItems>()
@@ -66,6 +67,7 @@ namespace Inventory.Mostafa.Application.Order.Command.Add
                 OrderNumber = order.OrderNumber,
                 OrderType = order.OrderType,
                 SupplierName = order.SupplierName,
+                RecipintName = order.RecipintName,
                 OrderDate = order.OrderDate,
                 Attachment = _configuration["BASEURL"] + order.Attachment,
                 Items = order.OrderItems.Select(i => new OrderItemDto() { ItemId = i.Id, ItemName = i.ItemName, StockNumber = i.StockNumber, Quantity = i.Quantity,ConsumedQuantity = i.ConsumedQuantity,RemainingQuantity = (i.Quantity - i.ConsumedQuantity) ,SerialNumbers = i.SerialNumbers.Select(s => s.SerialNumber).ToList() }).ToList(),

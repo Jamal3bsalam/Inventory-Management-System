@@ -13,6 +13,7 @@ namespace Inventory.Mostafa.Application.Contract.Order
         public string? OrderNumber { get; set; }
         public string? OrderType { get; set; }
         public string? SupplierName { get; set; }
+        public string? RecipintName { get; set; }
         public DateOnly? OrderDate { get; set; }
         public string? Attachment { get; set; }
         public ICollection<OrderItemDto>? Items { get; set; } = new List<OrderItemDto>();

@@ -54,6 +54,11 @@ namespace Inventory.Mostafa.Application.Order.Command.Update
                 order.SupplierName = request.SupplierName;
             }
 
+            if (!string.IsNullOrEmpty(request.RecipintName))
+            {
+                order.RecipintName = request.RecipintName;
+            }
+
             if (request.OrderNumber != null)
             {
                 order.OrderNumber = request.OrderNumber.ToString();
@@ -99,6 +104,7 @@ namespace Inventory.Mostafa.Application.Order.Command.Update
                 Id = order.Id,
                 OrderNumber = order.OrderNumber,
                 OrderType = order.OrderType,
+                RecipintName = order.RecipintName,
                 SupplierName = order.SupplierName,
                 OrderDate = order.OrderDate,
                 Attachment = _configuration["BASEURL"] + order.Attachment,

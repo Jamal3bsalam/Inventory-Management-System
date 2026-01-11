@@ -34,6 +34,8 @@ namespace Inventory.Mostafa.Domain.Specification.UnitExp
         {
             ApplyInclude();
         }
+
+
         public UnitExpenseSpec(UnitExpenseParameter parameter) : base(S => S.IsDeleted != true && (string.IsNullOrEmpty(parameter.Search) || S.DocumentNumber.ToLower().Contains(parameter.Search)))
         {
 

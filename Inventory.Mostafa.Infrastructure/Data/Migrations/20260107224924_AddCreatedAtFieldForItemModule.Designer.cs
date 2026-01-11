@@ -4,6 +4,7 @@ using Inventory.Mostafa.Infrastructure.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Inventory.Mostafa.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(InventoryDbContext))]
-    partial class InventoryDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260107224924_AddCreatedAtFieldForItemModule")]
+    partial class AddCreatedAtFieldForItemModule
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -180,9 +183,6 @@ namespace Inventory.Mostafa.Infrastructure.Data.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("DocumentPath")
                         .HasColumnType("nvarchar(max)");
@@ -501,9 +501,6 @@ namespace Inventory.Mostafa.Infrastructure.Data.Migrations
 
                     b.Property<string>("OrderType")
                         .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("RecipintName")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SupplierName")
                         .HasColumnType("nvarchar(max)");

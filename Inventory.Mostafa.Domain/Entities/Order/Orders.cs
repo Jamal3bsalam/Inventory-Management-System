@@ -17,6 +17,7 @@ namespace Inventory.Mostafa.Domain.Entities.Order
         [Column(TypeName = "nvarchar(50)")]  // يخزن الاسم مش الرقم
         public string? OrderType { get; set; }  // تعميد - أمر شراء - دعم
         public string? SupplierName { get; set; }
+        public string? RecipintName { get; set; }
         public DateOnly OrderDate { get; set; }
         public string? Attachment { get; set; }
         public bool IsDeleted { get; set; }

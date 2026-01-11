@@ -1,11 +1,5 @@
 ﻿using Inventory.Mostafa.Domain.Entities.CustodayTables;
 using Inventory.Mostafa.Domain.Specification.Store;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace Inventory.Mostafa.Domain.Specification.CustodaySpecificaion
 {
     public class TransferSpec:Specifications<CustodayTransfers,int>
@@ -29,6 +23,12 @@ namespace Inventory.Mostafa.Domain.Specification.CustodaySpecificaion
             }
             ApplyInclude();
         }
+
+        public TransferSpec(int? unitId, List<int?> itemIds): base(t => (!unitId.HasValue || t.UnitId == unitId) && itemIds.Contains(t.ItemId))
+        {
+            ApplyInclude();
+        }
+
 
         private void ApplyInclude()
         {

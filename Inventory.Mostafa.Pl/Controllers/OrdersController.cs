@@ -101,7 +101,7 @@ namespace Inventory.Mostafa.Pl.Controllers
         {
             if(!ModelState.IsValid) return BadRequest(ModelState);
 
-            var orderCommand = new UpdateOrderCommand() { Id = update.Id,OrderNumber = update.OrderNumber,OrderType =update.OrderType, File = update.File,SupplierName = update.SupplierName,Items = update.Items};
+            var orderCommand = new UpdateOrderCommand() { Id = update.Id,OrderNumber = update.OrderNumber,OrderType =update.OrderType, File = update.File,RecipintName = update.RecipintName,SupplierName = update.SupplierName,Items = update.Items};
             var order = await _mediator.Send(orderCommand);
             if (order.Data == null) return BadRequest(new ErrorResponse(400,order.Message));
 

@@ -24,6 +24,7 @@ namespace Inventory.Mostafa.Domain.Entities.CustodayTables
 
         public int Quantity { get; set; }
         public DateOnly TransactionDate { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public string? DocumentPath { get; set; }
     }
 }

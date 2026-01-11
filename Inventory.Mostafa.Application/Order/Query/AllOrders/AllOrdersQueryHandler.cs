@@ -41,6 +41,7 @@ namespace Inventory.Mostafa.Application.Order.Query.AllOrders
                 OrderNumber = o.OrderNumber,
                 OrderType = o.OrderType,
                 SupplierName = o.SupplierName,
+                RecipintName = o.RecipintName,
                 OrderDate = o.OrderDate,
                 Attachment = _configuration["BASEURL"] + o.Attachment,
                 Items = o.OrderItems.Select(i => new OrderItemDto() { ItemId = i.Id, ItemName = i.ItemName, StockNumber = i.StockNumber, Quantity = i.Quantity,ConsumedQuantity = i.ConsumedQuantity, RemainingQuantity = (i.Quantity - i.ConsumedQuantity), SerialNumbers = i.SerialNumbers.Select(s => s.SerialNumber).ToList() }).ToList(),

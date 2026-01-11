@@ -13,6 +13,7 @@ namespace Inventory.Mostafa.Application.ITem.Query.AllItems
     {
         public int? pageSize { get; set; } = 10;
         public int? pageIndex { get; set; } = 1;
+        public int? year { get; set; }
         //public string? OrderBy { get; set; } = "ItemsName";
 
         private string? search;

@@ -1,6 +1,4 @@
 ﻿using Inventory.Mostafa.Application.Abstraction.DataBase;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Inventory.Mostafa.Pl.Controllers
