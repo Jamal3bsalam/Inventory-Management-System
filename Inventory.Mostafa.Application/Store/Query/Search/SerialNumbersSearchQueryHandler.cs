@@ -4,21 +4,18 @@ using Inventory.Mostafa.Domain.Entities.Store;
 using Inventory.Mostafa.Domain.Shared;
 using Inventory.Mostafa.Domain.Specification.Store;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+using Microsoft.Extensions.Configuration;
 namespace Inventory.Mostafa.Application.Store.Query.Search
 {
     public class SerialNumbersSearchQueryHandler : IRequestHandler<SerialNumbersSearchQuery, Result<SerialNumbersSearchDto>>
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IConfiguration _configuration;
 
-        public SerialNumbersSearchQueryHandler(IUnitOfWork unitOfWork)
+        public SerialNumbersSearchQueryHandler(IUnitOfWork unitOfWork,IConfiguration configuration)
         {
             _unitOfWork = unitOfWork;
+            _configuration = configuration;
         }
         public async Task<Result<SerialNumbersSearchDto>> Handle(SerialNumbersSearchQuery request, CancellationToken cancellationToken)
         {
@@ -41,7 +38,9 @@ namespace Inventory.Mostafa.Application.Store.Query.Search
                 UnitName = store.Unit.UnitName,
                 ItemName = storeItem.Items.ItemsName,
                 DocumentNumber = store.DocumentNumber,
+                DocumentUrl = _configuration["BASEURL"] + store.DocumentPath,
                 OrderNumber = storeItem.Order.OrderNumber,
+                OrderDocumentUrl = _configuration["BASEURL"] + storeItem.Order.Attachment,
                 SupplierName = storeItem.Order.SupplierName,
                 OrderDate = storeItem.Order.OrderDate,
                 SerialNumber = request.SerialNumber

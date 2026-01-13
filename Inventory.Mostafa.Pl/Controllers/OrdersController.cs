@@ -10,6 +10,7 @@ using Inventory.Mostafa.Application.Order.Command.Update;
 using Inventory.Mostafa.Application.Order.Command.Update.File;
 using Inventory.Mostafa.Application.Order.Query.AllOrders;
 using Inventory.Mostafa.Application.Order.Query.AllOrdersForSpecificType;
+using Inventory.Mostafa.Application.Order.Query.OrdersForSpecificRecipints;
 using Inventory.Mostafa.Application.Units.Command.Add;
 using Inventory.Mostafa.Domain.Entities.Order;
 using Inventory.Mostafa.Domain.Enums;
@@ -49,6 +50,16 @@ namespace Inventory.Mostafa.Pl.Controllers
             var orders = await _mediator.Send(getAllOrdersQuery);
             if (orders == null) return BadRequest(new ErrorResponse(400, "Faild To Retrive All Orders"));
             return Ok(new ApiResponse<Pagination<IEnumerable<OrderDto>>>(true, 200, "Orders Retrived Successfully.",orders.Data));
+        }
+
+        [HttpGet("Recipints/Name")]
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = "Admin,User")]
+        [Cashed(60)]
+        public async Task<ActionResult<ApiResponse<OrdersForRecipientResponseDto>>> GetAllOrders([FromQuery] string RecipintName)
+        {
+            var getAllOrdersQuery = new GetAllOrdersByRecipintQuery() { RecipintName = RecipintName };
+            var orders = await _mediator.Send(getAllOrdersQuery);
+            return Ok(new ApiResponse<OrdersForRecipientResponseDto>(true, 200,orders.Message, orders.Data));
         }
 
         [HttpGet("Type")]

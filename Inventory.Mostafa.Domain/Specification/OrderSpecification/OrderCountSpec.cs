@@ -12,5 +12,9 @@ namespace Inventory.Mostafa.Domain.Specification.OrderSpecification
         public OrderCountSpec(SpecParameter specParameters) : base(U => U.IsDeleted != true && (string.IsNullOrEmpty(specParameters.Search) || U.OrderNumber.ToLower().Contains(specParameters.Search)))
         {
         }
+
+        public OrderCountSpec(string recipintsName) : base(U => U.IsDeleted != true && (string.IsNullOrEmpty(recipintsName) || U.OrderNumber.ToLower().Contains(recipintsName)))
+        {
+        }
     }
 }

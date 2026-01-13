@@ -1,11 +1,5 @@
 ﻿using Inventory.Mostafa.Domain.Entities.Order;
 using Inventory.Mostafa.Domain.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace Inventory.Mostafa.Domain.Specification.OrderSpecification
 {
     public class OrderSpec:Specifications<Orders,int>
@@ -26,6 +20,11 @@ namespace Inventory.Mostafa.Domain.Specification.OrderSpecification
         }
 
         public OrderSpec(OrderType orderType) : base(S => S.IsDeleted != true && S.OrderType == orderType.ToString())
+        {
+            ApplyInclude();
+        }
+
+        public OrderSpec(string recipintName) : base(S => S.IsDeleted != true && (string.IsNullOrEmpty(recipintName) || S.RecipintName.ToLower().Contains(recipintName)))
         {
             ApplyInclude();
         }
