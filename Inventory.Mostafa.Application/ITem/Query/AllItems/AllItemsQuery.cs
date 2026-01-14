@@ -11,7 +11,7 @@ namespace Inventory.Mostafa.Application.ITem.Query.AllItems
 {
     public class AllItemsQuery : IRequest<Pagination<IEnumerable<ItemDto>>>
     {
-        public int? pageSize { get; set; } = 10;
+        public int? pageSize { get; set; }
         public int? pageIndex { get; set; } = 1;
         public int? year { get; set; }
         //public string? OrderBy { get; set; } = "ItemsName";

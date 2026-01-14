@@ -8,7 +8,7 @@ namespace Inventory.Mostafa.Domain.Specification.ITemSpecification
 {
     public class ItemSpecParameter
     {
-        public int? pageSize { get; set; } = 10;
+        public int? pageSize { get; set; }
         public int? pageIndex { get; set; } = 1;
         public int? year { get; set; }
 
