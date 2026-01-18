@@ -10,7 +10,6 @@
         public string? DocumentNumber { get; set; }
         public DateOnly? ExpenseDate { get; set; }
         public List<string>? OldRecipintsRecipients { get; set; }
-        public List<string>? CustodaysFiles { get; set; }
         public ICollection<UnitExpensItemsDto>? UnitExpenseItemsDtos { get; set; }
     }
 }

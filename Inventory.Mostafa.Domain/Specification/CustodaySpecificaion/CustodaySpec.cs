@@ -32,6 +32,7 @@ namespace Inventory.Mostafa.Domain.Specification.CustodaySpecificaion
             Include.Add(C => C.Recipients);
             Include.Add(C => C.Unit);
             IncludeStrings.Add($"{nameof(Custoday.CustodyItems)}.{nameof(CustodyItem.Item)}");
+            IncludeStrings.Add($"{nameof(Custoday.CustodyItems)}.{nameof(CustodyItem.UnitExpenseLinks)}");
            
         }
     }

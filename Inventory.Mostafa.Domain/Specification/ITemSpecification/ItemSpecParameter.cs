@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Inventory.Mostafa.Domain.Specification.ITemSpecification
+﻿namespace Inventory.Mostafa.Domain.Specification.ITemSpecification
 {
     public class ItemSpecParameter
     {

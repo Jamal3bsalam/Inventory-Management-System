@@ -8,13 +8,7 @@ using Inventory.Mostafa.Domain.Entities.Store;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using NHibernate.Criterion;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Inventory.Mostafa.Infrastructure.Data.Context
 {
@@ -52,5 +46,6 @@ namespace Inventory.Mostafa.Infrastructure.Data.Context
         public DbSet<WriteOff> WriteOff { get; set; }
         public DbSet<Returns> Returns { get; set; }
         public DbSet<CustodayTransfers> CustodayTransfers { get; set; }
+        public DbSet<CustodyItemUnitExpense> CustodyItemUnitExpense { get; set; }
     }
 }

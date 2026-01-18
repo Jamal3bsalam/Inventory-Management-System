@@ -9,6 +9,7 @@ using Inventory.Mostafa.Domain.Specification.UnitExp;
 using Mapster;
 using MediatR;
 using Microsoft.Extensions.Configuration;
+using System.Linq;
 namespace Inventory.Mostafa.Application.UnitExp.Query.AllUnitExpenseWithCustodaysFiles
 {
     internal class AllQueryHandler : IRequestHandler<AllQuery, Result<Pagination<IEnumerable<UnitExpenseDetailsDto>>>>
@@ -38,51 +39,31 @@ namespace Inventory.Mostafa.Application.UnitExp.Query.AllUnitExpenseWithCustoday
 
             var allExpenseItemIds = unitExpenses
                     .SelectMany(u => u.ExpenseItems)
-                    .Select(i => i.ItemId)
-                    .Where(i => i.HasValue)
-                    .Distinct()
+                    .Select(i => i.Id)
                     .ToList();
 
             // ✅ نجيب كل Custodays مرة واحدة
-            List<CustodayTransfers> relatedCustodays = new();
+            List<CustodyItemUnitExpense> custodyItemLinks = new();
             TransferSpec custodaySpec;
 
             if (allExpenseItemIds.Any()) 
             {
-                if (request.UnitId.HasValue)
-                {
-                    custodaySpec = new TransferSpec(request.UnitId.Value,allExpenseItemIds);
-                }
-                else
-                {
-                    custodaySpec = new TransferSpec(null,allExpenseItemIds);
-                }
-                relatedCustodays = (List<CustodayTransfers>)await _unitOfWork.Repository<CustodayTransfers, int>().GetAllWithSpecAsync(custodaySpec);
+                var custodayExpenseSpec = new CustodyItemUnitExpenseSpec(allExpenseItemIds);
+                custodyItemLinks = (List<CustodyItemUnitExpense>)await _unitOfWork.Repository<CustodyItemUnitExpense, int>().GetAllWithSpecAsync(custodayExpenseSpec);
             }
 
             // ✅ Mapping من غير async
             var unitExpenseDtos = unitExpenses.Select(S =>
                 {
                     var expenseItemIds = S.ExpenseItems
-                        .Select(i => i.ItemId)
-                        .Where(i => i.HasValue)
+                        .Select(i => i.Id)
                         .ToList();
 
-                    var custodaysForExpense = relatedCustodays
-                        .Where(t => t.UnitId == S.UnitId && expenseItemIds.Contains(t.ItemId))
-                        .ToList();
 
-                    var oldRecipients = custodaysForExpense
-                        .Where(c => c.OldRecipientId != S.RecipientsId)
-                        .OrderByDescending(c => c.CreatedAt)
-                        .Select(c => c.OldRecipient!.Name)
-                        .Distinct()
-                        .ToList();
-
-                    var custodaysFiles = custodaysForExpense
-                        .Where(c => !string.IsNullOrEmpty(c.DocumentPath))
-                        .OrderByDescending(c => c.CreatedAt)
-                        .Select(c => _configuration["BASEURL"] + c.DocumentPath)
+                    var oldRecipients = custodyItemLinks
+                        .Where(l => expenseItemIds.Contains((int)l.UnitExpenseItemId) && l.CustodyItem.Custody.RecipientsId != S.RecipientsId)
+                        .OrderByDescending(l => l.CreatedAt)
+                        .Select(l => l.CustodyItem?.Custody?.Recipients?.Name)
                         .Distinct()
                         .ToList();
 
@@ -104,7 +85,6 @@ namespace Inventory.Mostafa.Application.UnitExp.Query.AllUnitExpenseWithCustoday
                         }).ToList(),
 
                         OldRecipintsRecipients = oldRecipients,
-                        CustodaysFiles = custodaysFiles
                     };
                 }).ToList();
 

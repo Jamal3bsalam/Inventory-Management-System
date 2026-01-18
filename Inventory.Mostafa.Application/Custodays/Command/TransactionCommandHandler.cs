@@ -1,8 +1,6 @@
 ﻿using Inventory.Mostafa.Application.Abstraction.Files;
 using Inventory.Mostafa.Application.Abstraction.UnitOfWork;
 using Inventory.Mostafa.Application.Contract.CustodayDtos;
-using Inventory.Mostafa.Domain.Entities;
-using Inventory.Mostafa.Domain.Entities.AssetsReturns;
 using Inventory.Mostafa.Domain.Entities.CustodayTables;
 using Inventory.Mostafa.Domain.Entities.Store;
 using Inventory.Mostafa.Domain.Entities.UnitEx;
@@ -12,12 +10,6 @@ using Inventory.Mostafa.Domain.Specification.Store;
 using Inventory.Mostafa.Domain.Specification.UnitExp;
 using MediatR;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace Inventory.Mostafa.Application.Custodays.Command
 {
     public class TransactionCommandHandler : IRequestHandler<TransactionCommand, Result<List<CustodayDto>>>
@@ -82,10 +74,13 @@ namespace Inventory.Mostafa.Application.Custodays.Command
                         // خصم الكمية من القديم
                         oldItem.Quantity -= transfer.Quantity;
                         if (oldItem.Quantity == 0)
-                          _unitOfWork.Repository<CustodyItem,int>().Delete(oldItem);
+                        {
+                           oldItem.IsDeleted = true;
+                           _unitOfWork.Repository<CustodyItem,int>().Update(oldItem);
+                        }
 
                         // أضف أو حدث عند المستلم الجديد
-                        var newItem = newCustody.CustodyItems?.FirstOrDefault(x => x.ItemId == transfer.ItemId);
+                        var newItem = newCustody.CustodyItems?.FirstOrDefault(x => x.ItemId == transfer.ItemId && x.IsDeleted == false);
                         if (newItem != null)
                             newItem.Quantity += transfer.Quantity;
                         else
@@ -98,6 +93,21 @@ namespace Inventory.Mostafa.Application.Custodays.Command
                             };
                             await _unitOfWork.Repository<CustodyItem,int>().AddAsync(newItem);
                             await _unitOfWork.CompleteAsync();
+
+                            var oldItemUnitExpenses = oldItem.UnitExpenseLinks; // افتراضياً علاقة 1-N بين CustodyItem و CustodyItemUnitExpense
+                            foreach (var oldCiu in oldItemUnitExpenses)
+                            {
+                                var newCiu = new CustodyItemUnitExpense
+                                {
+                                    CustodyItemId = newItem.Id,
+                                    UnitExpenseItemId = oldCiu.UnitExpenseItemId,
+                                    Quantity = oldCiu.Quantity,
+                                    CreatedAt = DateTime.Now
+                                };
+                                await _unitOfWork.Repository<CustodyItemUnitExpense, int>().AddAsync(newCiu);
+                            }
+                            await _unitOfWork.CompleteAsync();
+
                         }
 
                     newCustody.TransactionDate = request.TransactionDate;
@@ -122,6 +132,8 @@ namespace Inventory.Mostafa.Application.Custodays.Command
                     };
 
                     resultDtos.Add(transactionDto);
+
+
 
                     // Save transfer record
                     var transferRecord = new CustodayTransfers

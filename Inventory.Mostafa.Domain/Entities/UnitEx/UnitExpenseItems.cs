@@ -1,4 +1,5 @@
-﻿using Inventory.Mostafa.Domain.Shared;
+﻿using Inventory.Mostafa.Domain.Entities.CustodayTables;
+using Inventory.Mostafa.Domain.Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,5 +16,9 @@ namespace Inventory.Mostafa.Domain.Entities.UnitEx
         public int? Quantity { get; set; }
         public Items? Item { get; set; }
         public UnitExpense? UnitExpense { get; set; }
+        public ICollection<CustodayTransfers> CustodayTransfers { get; set; } = new List<CustodayTransfers>();
+        public ICollection<CustodyItemUnitExpense>? CustodyLinks { get; set; }
+
+
     }
 }

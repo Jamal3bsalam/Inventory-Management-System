@@ -4,6 +4,7 @@ using Inventory.Mostafa.Infrastructure.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Inventory.Mostafa.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(InventoryDbContext))]
-    partial class InventoryDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260116170803_AddRelationbetweenUnitExpenseItemsandCustodayItem")]
+    partial class AddRelationbetweenUnitExpenseItemsandCustodayItem
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -234,13 +237,13 @@ namespace Inventory.Mostafa.Infrastructure.Data.Migrations
                     b.Property<int?>("CustodyId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
                     b.Property<int?>("ItemId")
                         .HasColumnType("int");
 
                     b.Property<int?>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UnitExpenseItemsId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -249,36 +252,11 @@ namespace Inventory.Mostafa.Infrastructure.Data.Migrations
 
                     b.HasIndex("ItemId");
 
+                    b.HasIndex("UnitExpenseItemsId")
+                        .IsUnique()
+                        .HasFilter("[UnitExpenseItemsId] IS NOT NULL");
+
                     b.ToTable("CustodyItems");
-                });
-
-            modelBuilder.Entity("Inventory.Mostafa.Domain.Entities.CustodayTables.CustodyItemUnitExpense", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("CustodyItemId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("UnitExpenseItemId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CustodyItemId");
-
-                    b.HasIndex("UnitExpenseItemId");
-
-                    b.ToTable("CustodyItemUnitExpense");
                 });
 
             modelBuilder.Entity("Inventory.Mostafa.Domain.Entities.Identity.AppUser", b =>
@@ -1052,26 +1030,16 @@ namespace Inventory.Mostafa.Infrastructure.Data.Migrations
                         .HasForeignKey("ItemId")
                         .OnDelete(DeleteBehavior.NoAction);
 
+                    b.HasOne("Inventory.Mostafa.Domain.Entities.UnitEx.UnitExpenseItems", "UnitExpenseItems")
+                        .WithOne("CustodyItem")
+                        .HasForeignKey("Inventory.Mostafa.Domain.Entities.CustodayTables.CustodyItem", "UnitExpenseItemsId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
                     b.Navigation("Custody");
 
                     b.Navigation("Item");
-                });
 
-            modelBuilder.Entity("Inventory.Mostafa.Domain.Entities.CustodayTables.CustodyItemUnitExpense", b =>
-                {
-                    b.HasOne("Inventory.Mostafa.Domain.Entities.CustodayTables.CustodyItem", "CustodyItem")
-                        .WithMany("UnitExpenseLinks")
-                        .HasForeignKey("CustodyItemId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("Inventory.Mostafa.Domain.Entities.UnitEx.UnitExpenseItems", "UnitExpenseItem")
-                        .WithMany("CustodyLinks")
-                        .HasForeignKey("UnitExpenseItemId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.Navigation("CustodyItem");
-
-                    b.Navigation("UnitExpenseItem");
+                    b.Navigation("UnitExpenseItems");
                 });
 
             modelBuilder.Entity("Inventory.Mostafa.Domain.Entities.Opening.OpeningSerialNumber", b =>
@@ -1307,11 +1275,6 @@ namespace Inventory.Mostafa.Infrastructure.Data.Migrations
                     b.Navigation("CustodyItems");
                 });
 
-            modelBuilder.Entity("Inventory.Mostafa.Domain.Entities.CustodayTables.CustodyItem", b =>
-                {
-                    b.Navigation("UnitExpenseLinks");
-                });
-
             modelBuilder.Entity("Inventory.Mostafa.Domain.Entities.Identity.Unit", b =>
                 {
                     b.Navigation("CustodayTransfers");
@@ -1407,7 +1370,7 @@ namespace Inventory.Mostafa.Infrastructure.Data.Migrations
                 {
                     b.Navigation("CustodayTransfers");
 
-                    b.Navigation("CustodyLinks");
+                    b.Navigation("CustodyItem");
                 });
 #pragma warning restore 612, 618
         }

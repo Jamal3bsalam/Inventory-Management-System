@@ -1,4 +1,5 @@
 ﻿using Inventory.Mostafa.Domain.Entities.Identity;
+using Inventory.Mostafa.Domain.Entities.UnitEx;
 using Inventory.Mostafa.Domain.Shared;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,8 @@ namespace Inventory.Mostafa.Domain.Entities.CustodayTables
     {
         public int UnitId { get; set; }
         public Unit? Unit { get; set; }
-
+        public UnitExpenseItems? UnitExpenseItems { get; set; }
+        public int? UnitExpenseItemsId { get; set; }
         public int? ItemId { get; set; }
         public Items? Item { get; set; }
 

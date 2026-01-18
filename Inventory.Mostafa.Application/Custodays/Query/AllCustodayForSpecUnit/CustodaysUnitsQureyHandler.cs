@@ -34,7 +34,7 @@ namespace Inventory.Mostafa.Application.Custodays.Query.AllCustodayForSpecUnit
                 CustodayId = c.Id,
                 CurrentRecipintsId = c.RecipientsId,
                 CurrentRecipints = c.Recipients.Name,
-                CustodaysUnitsItems = c.CustodyItems.Select(i => new CustodaysUnitsItemsDto()
+                CustodaysUnitsItems = c.CustodyItems.Where(i => i.IsDeleted == false).Select(i => new CustodaysUnitsItemsDto()
                 {
                     ItemId = i.Item.Id,
                     ItemName = i.Item.ItemsName,

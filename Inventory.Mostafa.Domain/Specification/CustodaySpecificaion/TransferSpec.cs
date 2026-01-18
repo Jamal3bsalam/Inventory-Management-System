@@ -24,7 +24,7 @@ namespace Inventory.Mostafa.Domain.Specification.CustodaySpecificaion
             ApplyInclude();
         }
 
-        public TransferSpec(int? unitId, List<int?> itemIds): base(t => (!unitId.HasValue || t.UnitId == unitId) && itemIds.Contains(t.ItemId))
+        public TransferSpec(int? unitId, List<int?> expenseItemIds): base(t => (!unitId.HasValue || t.UnitId == unitId) && expenseItemIds.Contains(t.UnitExpenseItemsId))
         {
             ApplyInclude();
         }

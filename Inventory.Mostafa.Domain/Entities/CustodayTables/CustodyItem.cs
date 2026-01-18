@@ -10,5 +10,7 @@ namespace Inventory.Mostafa.Domain.Entities.CustodayTables
         // Navigation
         public Custoday? Custody { get; set; }
         public Items? Item { get; set; }
+        public bool IsDeleted { get; set; }
+        public ICollection<CustodyItemUnitExpense>? UnitExpenseLinks { get; set; }
     }
 }

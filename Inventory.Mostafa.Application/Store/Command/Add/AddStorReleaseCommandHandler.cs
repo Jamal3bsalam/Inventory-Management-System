@@ -133,7 +133,7 @@ namespace Inventory.Mostafa.Application.Store.Command.Add
                 };
                 await _unitOfWork.Repository<StockTransaction, int>().AddAsync(stockTransaction);
 
-                var custodyItem = custoday?.CustodyItems?.FirstOrDefault(ci => ci.ItemId == orderItems.ItemsId);
+                var custodyItem = custoday?.CustodyItems?.FirstOrDefault(ci => ci.ItemId == orderItems.ItemsId && ci.IsDeleted == false);
                 if (custodyItem == null)
                 {
                     custodyItem = new CustodyItem
@@ -183,6 +183,27 @@ namespace Inventory.Mostafa.Application.Store.Command.Add
 
             await _unitOfWork.Repository<UnitExpense,int>().AddAsync(unitExpense);
             await _unitOfWork.CompleteAsync();
+
+            var expenseItems = unitExpense.ExpenseItems.ToList();
+
+            foreach (var expenseItem in expenseItems)
+            {
+                var custodyItem = custoday.CustodyItems
+                    .FirstOrDefault(ci => ci.ItemId == expenseItem.ItemId);
+
+                if (custodyItem != null)
+                {
+                    var link = new CustodyItemUnitExpense
+                    {
+                        CustodyItemId = custodyItem.Id,
+                        UnitExpenseItemId = expenseItem.Id,
+                        Quantity = (int)expenseItem.Quantity
+                    };
+
+                    await _unitOfWork.Repository<CustodyItemUnitExpense, int>().AddAsync(link);
+                    await _unitOfWork.CompleteAsync();
+                }
+            }
 
             //var OrderitemSpec = new ItemSpec(storeItem.Items.Id);
             //var OrderitemDb = await _unitOfWork.Repository<Items,int>().GetWithSpecAsync(itemSpec);

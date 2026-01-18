@@ -99,7 +99,7 @@ namespace Inventory.Mostafa.Application.UnitExp.Command.Add
 
             foreach (var item in request.UnitExpenseItemsDtos)
             {
-                var custodyItem = custoday?.CustodyItems?.FirstOrDefault(ci => ci.ItemId == item.ItemId);
+                var custodyItem = custoday?.CustodyItems?.FirstOrDefault(ci => ci.ItemId == item.ItemId && ci.IsDeleted == false);
                 if (custodyItem == null)
                 {
                     custodyItem = new CustodyItem
@@ -109,13 +109,24 @@ namespace Inventory.Mostafa.Application.UnitExp.Command.Add
                         Quantity = item.Quantity
                     };
                     await _unitOfWork.Repository<CustodyItem, int>().AddAsync(custodyItem);
-
+                    await _unitOfWork.CompleteAsync();
                 }
                 else
                 {
                     custodyItem.Quantity += item.Quantity;
                     _unitOfWork.Repository<CustodyItem, int>().Update(custodyItem);
                 }
+
+                var expenseItem = unitExp.ExpenseItems.FirstOrDefault(e => e.ItemId == item.ItemId);
+
+                var custodyItemUnitExpense = new CustodyItemUnitExpense
+                {
+                    CustodyItemId = custodyItem.Id,
+                    UnitExpenseItemId = expenseItem.Id,
+                    Quantity = (int)item.Quantity
+                };
+
+                await _unitOfWork.Repository<CustodyItemUnitExpense, int>().AddAsync(custodyItemUnitExpense);
             }
 
             await _unitOfWork.CompleteAsync();

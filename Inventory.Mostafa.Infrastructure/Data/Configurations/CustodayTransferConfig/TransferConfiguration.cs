@@ -36,6 +36,11 @@ namespace Inventory.Mostafa.Infrastructure.Data.Configurations.CustodayTransferC
                   .HasForeignKey(t => t.NewRecipientId)
                   .OnDelete(DeleteBehavior.NoAction);
 
+            builder.HasOne(t => t.UnitExpenseItems)
+                   .WithMany(u => u.CustodayTransfers)
+                   .HasForeignKey(t => t.UnitExpenseItemsId)
+                   .OnDelete(DeleteBehavior.NoAction);
+
         }
     }
 }
