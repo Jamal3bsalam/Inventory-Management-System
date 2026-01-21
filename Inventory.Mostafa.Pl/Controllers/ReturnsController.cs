@@ -3,6 +3,7 @@ using Inventory.Mostafa.Application.Contract.Store;
 using Inventory.Mostafa.Application.Order.Command.Delete;
 using Inventory.Mostafa.Application.Return.Command.Add;
 using Inventory.Mostafa.Application.Return.Command.Delete;
+using Inventory.Mostafa.Application.Return.Command.File.Add;
 using Inventory.Mostafa.Application.Return.Command.Update;
 using Inventory.Mostafa.Application.Return.Query.AllReturns;
 using Inventory.Mostafa.Application.Store.Query.AllStoreRelease;
@@ -43,16 +44,27 @@ namespace Inventory.Mostafa.Pl.Controllers
 
         [HttpPost]
         [Authorize(AuthenticationSchemes = "Bearer", Roles = "Admin,User")]
-        public async Task<ActionResult<ApiResponse<ReturnDto>>> AddReturn(CreateReturn createReturn)
+        public async Task<ActionResult<ApiResponse<ReturnDto>>> AddReturn([FromBody]CreateReturn createReturn)
         {
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var returnCommand = new AddReturnCommand() { UnitId = createReturn.UnitId,RecipintsId = createReturn.RecipintsId , UnitExpenseId = createReturn.UnitExpenseId, Document = createReturn.Document,ItemId = createReturn.ItemId , Quantity = createReturn.Quantity , Reason = createReturn.Reason};
+            var returnCommand = new AddReturnCommand() { UnitId = createReturn.UnitId,RecipintsId = createReturn.RecipintsId , DocumentUrl = createReturn.DocumentUrl, Reason = createReturn.Reason,ReturnItems = createReturn.ReturnItems};
             var returns = await _mediator.Send(returnCommand);
             if(returns.Data == null) return BadRequest(new ErrorResponse(400,returns.Message));
 
             return Ok(new ApiResponse<ReturnDto>(true, 200, returns.Message, returns.Data));
+        }
+
+        [HttpPost("attachment")]
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = "Admin,User")]
+        public async Task<ActionResult<Result<string>>> UploadAttachment(IFormFile file)
+        {
+            var fileCommand = new AddFileCommand() { File = file };
+            var result = await _mediator.Send(fileCommand);
+            if (result == null) return BadRequest(new ErrorResponse(400, result.Message));
+
+            return Ok(new ApiResponse<Result<string>>(true, 200, "File Uploaded Successfully", result));
         }
 
         [HttpPut("{id}")]
@@ -78,7 +90,6 @@ namespace Inventory.Mostafa.Pl.Controllers
             var returnCommand = new DeleteReturnCommand() { Id = id };
             var returns = await _mediator.Send(returnCommand);
             if (returns.Data == null) return BadRequest(new ErrorResponse(400, returns.Message));
-
 
             return Ok(new ApiResponse<string>(true, 200, returns.Message, returns.Data));
         }

@@ -5,14 +5,7 @@ using Inventory.Mostafa.Domain.Entities.CustodayTables;
 using Inventory.Mostafa.Domain.Shared;
 using Inventory.Mostafa.Domain.Specification.CustodaySpecificaion;
 using Inventory.Mostafa.Domain.Specification.Return;
-using Inventory.Mostafa.Domain.Specification.UnitExp;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace Inventory.Mostafa.Application.Custodays.Query.RecipintsCustoday
 {
     public class AllRecipintsCustodayQueryHandler : IRequestHandler<AllRecipintsCustodayQuery, Result<IEnumerable<RecipintsCustodayDto>>>
@@ -49,16 +42,16 @@ namespace Inventory.Mostafa.Application.Custodays.Query.RecipintsCustoday
             var recipintsCustodayDto = custoday.CustodyItems.Select(i =>
             {
                 // Filter all returns related to this item
-                var itemReturns = recipintsReturns?.Where(r => r.ItemId == i.ItemId).ToList();
+                //var itemReturns = recipintsReturns?.Where(r => r.ItemId == i.ItemId).ToList();
 
-                var totalReturned = itemReturns?.Sum(r => r.Quantity ?? 0) ?? 0;
-                var totalWriteOff = itemReturns?.Sum(r => r.WriteOfQuantity) ?? 0;
+              //  var totalReturned = itemReturns?.Sum(r => r.Quantity ?? 0) ?? 0;
+              //  var totalWriteOff = itemReturns?.Sum(r => r.WriteOfQuantity) ?? 0;
 
                 return new RecipintsCustodayDto
                 {
                     ItemName = i.Item?.ItemsName,
-                    OriginalQuantity = i.Quantity + totalReturned + totalWriteOff,
-                    ReturnedQuantity = totalReturned + totalWriteOff,
+                    //OriginalQuantity = i.Quantity + totalReturned + totalWriteOff,
+                    //ReturnedQuantity = totalReturned + totalWriteOff,
                     RemainingQuantity = i.Quantity
                 };
             });

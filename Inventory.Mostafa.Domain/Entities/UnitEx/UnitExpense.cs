@@ -24,5 +24,6 @@ namespace Inventory.Mostafa.Domain.Entities.UnitEx
         public int? StoreReleaseId { get; set; }
         public ICollection<UnitExpenseItems>? ExpenseItems { get; set; }
         public ICollection<Returns>? Returns { get; set; }
+        public ICollection<ReturnItem>? ReturnItems { get; set; }
     }
 }

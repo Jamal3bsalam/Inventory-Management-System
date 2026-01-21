@@ -48,13 +48,16 @@ namespace Inventory.Mostafa.Application.Return.Query.AllReturns
                 Id = r.Id,
                 UnitName = r.Unit?.UnitName,
                 RecipintsName = r.Recipients?.Name,
-                ItemName = r.Item?.ItemsName,
-                DocumentUrl = r.DocumentPath != null ? _configuration["BASEURL"] + r.DocumentPath : null,
-                DocumentNumber = r.Expense?.DocumentNumber,
-                OriginalQuantity = r.Quantity + r.WriteOfQuantity,
-                WriteOfQuantity = r.WriteOfQuantity,
-                Quantity = r.Quantity,
+                ReturnDocUrl = string.IsNullOrEmpty(r.DocumentPath) ? null : _configuration["BASEURL"] + r.DocumentPath,
                 Reason = r.Reason,
+                ReturnItems = r.ReturnItems?.Select(ri => new ReturnItemResponseDto()
+                {
+                    ExpenseId = ri.UnitExpenseId,
+                    DocumentNumber = ri.UnitExpense?.DocumentNumber,
+                    DocumentUrl = string.IsNullOrEmpty(ri.UnitExpense?.AttachmentUrl) ? null : _configuration["BASEURL"] + ri.UnitExpense?.AttachmentUrl,
+                    ItemName = ri.Item?.ItemsName,
+                    Quantity = ri.Quantity
+                }).ToList()
             });
             var pagintion = new Pagination<IEnumerable<AllReturnDto>>(parameter.PageSize, parameter.PageIndex, counts, returnsDto);
 

@@ -36,7 +36,7 @@ namespace Inventory.Mostafa.Domain.Specification.UnitExp
         }
 
 
-        public UnitExpenseSpec(UnitExpenseParameter parameter) : base(S => S.IsDeleted != true && (string.IsNullOrEmpty(parameter.Search) || S.DocumentNumber.ToLower().Contains(parameter.Search)))
+        public UnitExpenseSpec(UnitExpenseParameter parameter) : base(S => S.IsDeleted != true && (string.IsNullOrEmpty(parameter.Search) || S.DocumentNumber.ToLower().Contains(parameter.Search)) && (parameter.RecipintId == null || S.Recipients.Id == parameter.RecipintId))
         {
 
             if (parameter.PageIndex.HasValue && parameter.PageSize.HasValue)

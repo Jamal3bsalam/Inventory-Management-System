@@ -1,15 +1,10 @@
-﻿using Inventory.Mostafa.Domain.Entities.CustodayTables;
+﻿using Inventory.Mostafa.Domain.Entities.AssetsReturns;
+using Inventory.Mostafa.Domain.Entities.CustodayTables;
 using Inventory.Mostafa.Domain.Entities.Opening;
 using Inventory.Mostafa.Domain.Entities.Order;
 using Inventory.Mostafa.Domain.Entities.Store;
 using Inventory.Mostafa.Domain.Entities.UnitEx;
 using Inventory.Mostafa.Domain.Shared;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace Inventory.Mostafa.Domain.Entities
 {
     public class Items : BaseEntity<int>
@@ -26,6 +21,6 @@ namespace Inventory.Mostafa.Domain.Entities
         public ICollection<StockTransaction>? StockTransactions { get; set; }
         public ICollection<UnitExpenseItems>? UnitExpenseItems { get; set; }
         public ICollection<CustodayTransfers>? CustodayTransfers { get; set; }
-
+        public ICollection<ReturnItem>? ReturnItems { get; set; }
     }
 }

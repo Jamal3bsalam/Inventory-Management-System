@@ -11,7 +11,7 @@ namespace Inventory.Mostafa.Domain.Specification.UnitExp
 {
     public class UnitExpenseCount : Specifications<UnitExpense,int>
     {
-        public UnitExpenseCount(UnitExpenseParameter specParameter) : base(U => U.IsDeleted != true && (string.IsNullOrEmpty(specParameter.Search) || U.DocumentNumber.ToLower().Contains(specParameter.Search)))
+        public UnitExpenseCount(UnitExpenseParameter specParameter) : base(U => U.IsDeleted != true && (string.IsNullOrEmpty(specParameter.Search) || U.DocumentNumber.ToLower().Contains(specParameter.Search)) && (specParameter.RecipintId == null || U.Recipients.Id == specParameter.RecipintId))
         {
         }
 

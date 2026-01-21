@@ -14,6 +14,7 @@ namespace Inventory.Mostafa.Application.UnitExp.Query.AllUnitExpense
         public int? UnitId { get; set; }
         public int? PageSize { get; set; }
         public int? PageIndex { get; set; }
+        public int? RecipintId { get; set; }
 
         private string? search;
 

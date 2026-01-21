@@ -6,6 +6,7 @@ namespace Inventory.Mostafa.Domain.Specification.UnitExp
         public int? UnitId { get; set; }
         public int? PageSize { get; set; }
         public int? PageIndex { get; set; } = 1;
+        public int? RecipintId { get; set; }
 
         private string? search;
 

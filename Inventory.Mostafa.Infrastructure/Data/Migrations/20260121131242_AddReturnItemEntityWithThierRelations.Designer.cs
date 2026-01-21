@@ -4,6 +4,7 @@ using Inventory.Mostafa.Infrastructure.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Inventory.Mostafa.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(InventoryDbContext))]
-    partial class InventoryDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260121131242_AddReturnItemEntityWithThierRelations")]
+    partial class AddReturnItemEntityWithThierRelations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -36,17 +39,12 @@ namespace Inventory.Mostafa.Infrastructure.Data.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<int>("ReturnId")
-                        .HasColumnType("int");
-
                     b.Property<int>("UnitExpenseId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ItemId");
-
-                    b.HasIndex("ReturnId");
 
                     b.HasIndex("UnitExpenseId");
 
@@ -67,8 +65,17 @@ namespace Inventory.Mostafa.Infrastructure.Data.Migrations
                     b.Property<string>("DocumentPath")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("ExpenseId")
+                        .HasColumnType("int");
+
                     b.Property<bool?>("IsDeleted")
                         .HasColumnType("bit");
+
+                    b.Property<int?>("ItemId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Quantity")
+                        .HasColumnType("int");
 
                     b.Property<string>("Reason")
                         .HasColumnType("nvarchar(max)");
@@ -79,19 +86,21 @@ namespace Inventory.Mostafa.Infrastructure.Data.Migrations
                     b.Property<int?>("StoreReleaseItemId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("UnitExpenseId")
+                    b.Property<int?>("UnitId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("UnitId")
+                    b.Property<int>("WriteOfQuantity")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ExpenseId");
+
+                    b.HasIndex("ItemId");
+
                     b.HasIndex("RecipientsId");
 
                     b.HasIndex("StoreReleaseItemId");
-
-                    b.HasIndex("UnitExpenseId");
 
                     b.HasIndex("UnitId");
 
@@ -950,12 +959,6 @@ namespace Inventory.Mostafa.Infrastructure.Data.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Inventory.Mostafa.Domain.Entities.AssetsReturns.Returns", "Return")
-                        .WithMany("ReturnItems")
-                        .HasForeignKey("ReturnId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Inventory.Mostafa.Domain.Entities.UnitEx.UnitExpense", "UnitExpense")
                         .WithMany("ReturnItems")
                         .HasForeignKey("UnitExpenseId")
@@ -964,13 +967,20 @@ namespace Inventory.Mostafa.Infrastructure.Data.Migrations
 
                     b.Navigation("Item");
 
-                    b.Navigation("Return");
-
                     b.Navigation("UnitExpense");
                 });
 
             modelBuilder.Entity("Inventory.Mostafa.Domain.Entities.AssetsReturns.Returns", b =>
                 {
+                    b.HasOne("Inventory.Mostafa.Domain.Entities.UnitEx.UnitExpense", "Expense")
+                        .WithMany("Returns")
+                        .HasForeignKey("ExpenseId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("Inventory.Mostafa.Domain.Entities.Items", "Item")
+                        .WithMany()
+                        .HasForeignKey("ItemId");
+
                     b.HasOne("Inventory.Mostafa.Domain.Entities.Recipients", "Recipients")
                         .WithMany("Returns")
                         .HasForeignKey("RecipientsId")
@@ -980,14 +990,14 @@ namespace Inventory.Mostafa.Infrastructure.Data.Migrations
                         .WithMany("Returns")
                         .HasForeignKey("StoreReleaseItemId");
 
-                    b.HasOne("Inventory.Mostafa.Domain.Entities.UnitEx.UnitExpense", null)
-                        .WithMany("Returns")
-                        .HasForeignKey("UnitExpenseId");
-
                     b.HasOne("Inventory.Mostafa.Domain.Entities.Identity.Unit", "Unit")
                         .WithMany("Returns")
                         .HasForeignKey("UnitId")
                         .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("Expense");
+
+                    b.Navigation("Item");
 
                     b.Navigation("Recipients");
 
@@ -1337,8 +1347,6 @@ namespace Inventory.Mostafa.Infrastructure.Data.Migrations
 
             modelBuilder.Entity("Inventory.Mostafa.Domain.Entities.AssetsReturns.Returns", b =>
                 {
-                    b.Navigation("ReturnItems");
-
                     b.Navigation("WriteOffs");
                 });
 

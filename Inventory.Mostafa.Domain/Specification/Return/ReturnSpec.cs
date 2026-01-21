@@ -1,4 +1,5 @@
 ﻿using Inventory.Mostafa.Domain.Entities.AssetsReturns;
+using Inventory.Mostafa.Domain.Entities.CustodayTables;
 using Inventory.Mostafa.Domain.Entities.Order;
 using Inventory.Mostafa.Domain.Entities.Store;
 using Inventory.Mostafa.Domain.Enums;
@@ -57,8 +58,11 @@ namespace Inventory.Mostafa.Domain.Specification.Return
             Include.Add(r => r.Unit);
             Include.Add(r => r.Recipients);
             Include.Add(r => r.WriteOffs);
-            Include.Add(r => r.Expense);
-            Include.Add(r => r.Item);
+            //Include.Add(r => r.Expense);
+            //Include.Add(r => r.Item);
+            Include.Add(r => r.ReturnItems);
+            IncludeStrings.Add($"{nameof(Returns.ReturnItems)}.{nameof(ReturnItem.UnitExpense)}");
+            IncludeStrings.Add($"{nameof(Returns.ReturnItems)}.{nameof(ReturnItem.Item)}");
         }
     }
 }

@@ -45,6 +45,7 @@ namespace Inventory.Mostafa.Infrastructure.Data.Context
 
         public DbSet<WriteOff> WriteOff { get; set; }
         public DbSet<Returns> Returns { get; set; }
+        public DbSet<ReturnItem> ReturnItems { get; set; }
         public DbSet<CustodayTransfers> CustodayTransfers { get; set; }
         public DbSet<CustodyItemUnitExpense> CustodyItemUnitExpense { get; set; }
     }

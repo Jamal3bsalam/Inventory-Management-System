@@ -14,10 +14,11 @@ namespace Inventory.Mostafa.Application.Return.Command.Add
     {
         public int? UnitId { get; set; }
         public int? RecipintsId { get; set; }
-        public IFormFile? Document { get; set; }
-        public int? UnitExpenseId { get; set; }
-        public int? ItemId { get; set; }
-        public int? Quantity { get; set; }
+        public string? DocumentUrl { get; set; }
+        //public int? UnitExpenseId { get; set; }
+        //public int? ItemId { get; set; }
+        //public int? Quantity { get; set; }
         public string? Reason { get; set; }
+        public List<ReturnItemsDto> ReturnItems { get; set; }
     }
 }

@@ -1,6 +1,4 @@
-﻿using Inventory.Mostafa.Application.Abstraction.Files;
-using Inventory.Mostafa.Application.Abstraction.UnitOfWork;
-using Inventory.Mostafa.Application.Contract.Return;
+﻿using Inventory.Mostafa.Application.Abstraction.UnitOfWork;
 using Inventory.Mostafa.Domain.Entities.AssetsReturns;
 using Inventory.Mostafa.Domain.Entities.CustodayTables;
 using Inventory.Mostafa.Domain.Entities.Store;
@@ -11,13 +9,6 @@ using Inventory.Mostafa.Domain.Specification.Return;
 using Inventory.Mostafa.Domain.Specification.Store;
 using Inventory.Mostafa.Domain.Specification.UnitExp;
 using MediatR;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace Inventory.Mostafa.Application.Return.Command.Delete
 {
     public class DeleteReturnCommandHandler : IRequestHandler<DeleteReturnCommand, Result<string>>
@@ -31,69 +22,80 @@ namespace Inventory.Mostafa.Application.Return.Command.Delete
         {
             if (request.Id == 0 || request.Id == null) return Result<string>.Failure("Please Enter Valid Id.");
 
-
-
             var returnSpec = new ReturnSpec(request.Id.Value);
             var returns = await _unitOfWork.Repository<Returns, int>().GetWithSpecAsync(returnSpec);
             if (returns == null) return Result<string>.Failure($"Return With This Id: {request.Id} Not Found");
 
-            var unitExpenseSpec = new UnitExpenseSpec(returns.ExpenseId.Value);
-            var unitExpense = await _unitOfWork.Repository<UnitExpense, int>().GetWithSpecAsync(unitExpenseSpec);
-            if(unitExpense == null) return Result<string>.Failure($"UnitExpense with Id: {returns.ExpenseId} not found");
-
-
-            var expenseItemSpec = new UnitExpenseItemSpec(returns.ExpenseId.Value);
-            var expenseItem = await _unitOfWork.Repository<UnitExpenseItems,int>().GetAllWithSpecAsync(expenseItemSpec);
-            if(expenseItem == null) return Result<string>.Failure($"No UnitExpenseItems found for Expense Id: {returns.ExpenseId}");
-
+            var returnItemSpec = new ReturnItemSpec(request.Id.Value);
+            var returnItems = await _unitOfWork.Repository<ReturnItem, int>().GetAllWithSpecAsync(returnItemSpec);
 
             var custodaySpec = new CustodaySpec(returns.RecipientsId.Value);
             var custoday = await _unitOfWork.Repository<Custoday,int>().GetWithSpecAsync(custodaySpec);
             if(custoday == null) return Result<string>.Failure($"Custoday for recipient Id: {returns.RecipientsId} not found");
 
 
-            var oldItem = expenseItem.FirstOrDefault(i => i.ItemId == returns.ItemId);
-            oldItem.Quantity += returns.Quantity;
-            _unitOfWork.Repository<UnitExpenseItems, int>().Update(oldItem);
-
-            if (unitExpense.StoreReleaseId.HasValue)
+            foreach (var returnItem in returns.ReturnItems)
             {
-                var storSpec = new StoreItemSpec(unitExpense.StoreReleaseId.Value);
-                var storeReleaseItem = await _unitOfWork.Repository<StoreReleaseItem, int>().GetAllWithSpecAsync(storSpec);
-                var selectedStoreReleaseItem = storeReleaseItem.FirstOrDefault(i => i.ItemId == returns.ItemId);
-                if (selectedStoreReleaseItem == null) return Result<string>.Failure("Faild to update Store Release Item Quantity.");
-                if (storeReleaseItem != null)
-                selectedStoreReleaseItem.Quantity += returns.Quantity;
-                _unitOfWork.Repository<StoreReleaseItem, int>().Update(selectedStoreReleaseItem);
+                // 1️⃣ Unit Expense
+                var unitExpenseSpec = new UnitExpenseSpec(returnItem.UnitExpenseId);
+                var unitExpense = await _unitOfWork.Repository<UnitExpense, int>().GetWithSpecAsync(unitExpenseSpec);
 
-            }
+                if (unitExpense == null) return Result<string>.Failure($"UnitExpense {returnItem.UnitExpenseId} Not Found");
 
-            var custodayItems = custoday.CustodyItems.FirstOrDefault(i => i.ItemId == returns.ItemId);
-            if (custodayItems == null)
-            {
-                var newCustodayItems = new CustodyItem()
+                // 2️⃣ UnitExpenseItems
+                var expenseItemSpec = new UnitExpenseItemSpec(returnItem.UnitExpenseId);
+                var expenseItems = await _unitOfWork.Repository<UnitExpenseItems, int>().GetAllWithSpecAsync(expenseItemSpec);
+
+                var oldItem = expenseItems.FirstOrDefault(i => i.ItemId == returnItem.ItemId);
+
+                if (oldItem == null) return Result<string>.Failure("UnitExpenseItem Not Found");
+
+                oldItem.Quantity += returnItem.Quantity;
+                _unitOfWork.Repository<UnitExpenseItems, int>().Update(oldItem);
+
+                // 3️⃣ Store Release
+                if (unitExpense.StoreReleaseId.HasValue)
                 {
-                    CustodyId = custoday.Id,
-                    ItemId = returns.ItemId,
-                    Quantity = returns.Quantity,
-                };
-                await _unitOfWork.Repository<CustodyItem, int>().AddAsync(newCustodayItems);
-            }
-            else
-            {
-                custodayItems.Quantity += returns.Quantity;
-                _unitOfWork.Repository<CustodyItem, int>().Update(custodayItems);
+                    var storeSpec = new StoreItemSpec(unitExpense.StoreReleaseId.Value);
+                    var storeItems = await _unitOfWork.Repository<StoreReleaseItem, int>()
+                                                       .GetAllWithSpecAsync(storeSpec);
+
+                    var storeItem = storeItems.FirstOrDefault(i => i.ItemId == returnItem.ItemId);
+
+                    if (storeItem == null) return Result<string>.Failure("StoreReleaseItem Not Found");
+
+                    storeItem.Quantity += returnItem.Quantity;
+                    _unitOfWork.Repository<StoreReleaseItem, int>().Update(storeItem);
+                }
+
+                // 4️⃣ Custody Items
+                var custodyItem = custoday?.CustodyItems?.FirstOrDefault(i => i.ItemId == returnItem.ItemId);
+
+                if (custodyItem == null)
+                {
+                    await _unitOfWork.Repository<CustodyItem, int>().AddAsync(
+                        new CustodyItem
+                        {
+                            CustodyId = custoday.Id,
+                            ItemId = returnItem.ItemId,
+                            Quantity = returnItem.Quantity
+                        });
+                }
+                else
+                {
+                    custodyItem.Quantity += returnItem.Quantity;
+                    _unitOfWork.Repository<CustodyItem, int>().Update(custodyItem);
+                }
             }
 
-            _unitOfWork.Repository<Returns,int>().Delete(returns);
-
+            // 🧨 Delete Return (Cascade will delete ReturnItems)
+            _unitOfWork.Repository<ReturnItem, int>().DeleteRange(returnItems);
+            _unitOfWork.Repository<Returns, int>().Delete(returns);
 
             var result = await _unitOfWork.CompleteAsync();
-            if (result <= 0) return Result<string>.Failure("Faild To Delete Returns");
+            if (result <= 0) return Result<string>.Failure("Failed To Delete Return");
 
-            return Result<string>.Success("Returns Deleted Successfully");
-
-
+            return Result<string>.Success("Return Deleted Successfully");
         }
     }
 }
