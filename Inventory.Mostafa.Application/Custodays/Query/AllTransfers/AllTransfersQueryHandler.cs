@@ -50,6 +50,7 @@ namespace Inventory.Mostafa.Application.Custodays.Query.AllTransfers
                 ItemName = r.Item?.ItemsName,
                 Quantity = r.Quantity,
                 TransactionDate = r.TransactionDate,
+                TransactionHijriDate = r.TransactionHijriDate,
                 DocumentPath = r.DocumentPath != null ? _configuration["BASEURL"] + r.DocumentPath : null,                
             });
             var pagintion = new Pagination<IEnumerable<TransactionDto>>(parameter.PageSize, parameter.PageIndex, counts, returnsDto);

@@ -43,7 +43,7 @@ namespace Inventory.Mostafa.Domain.Specification.Return
         {
             ApplyInclude();
         }
-        public ReturnSpec(int unitId, bool flag) : base(S => S.IsDeleted == true && S.UnitId == unitId)
+        public ReturnSpec(int unitId, bool flag) : base(S => S.IsDeleted != true && S.UnitId == unitId)
         {
             ApplyInclude();
         }

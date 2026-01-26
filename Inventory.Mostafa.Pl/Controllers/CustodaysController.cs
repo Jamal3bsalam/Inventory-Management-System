@@ -3,9 +3,8 @@ using Inventory.Mostafa.Application.Contract.CustodayRec;
 using Inventory.Mostafa.Application.Contract.Units;
 using Inventory.Mostafa.Application.CustodayRec.Query.All;
 using Inventory.Mostafa.Application.Custodays.Command;
-using Inventory.Mostafa.Application.Custodays.Command.File;
 using Inventory.Mostafa.Application.Custodays.Command.File.Add;
-using Inventory.Mostafa.Application.Custodays.Command.File.Update;
+using Inventory.Mostafa.Application.Custodays.Command.Update;
 using Inventory.Mostafa.Application.Custodays.Query.AllCustodayForSpecUnit;
 using Inventory.Mostafa.Application.Custodays.Query.AllTransfers;
 using Inventory.Mostafa.Application.Custodays.Query.RecipintsCustoday;
@@ -17,7 +16,6 @@ using Inventory.Mostafa.Pl.Response.General;
 using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Inventory.Mostafa.Pl.Controllers
@@ -53,7 +51,7 @@ namespace Inventory.Mostafa.Pl.Controllers
             var transferCustoday = new TransactionCommand()
             {
                 UnitId = create.UnitId,
-                NewRecipints = create.NewRecipints, FileName = create.FileName,TransactionDate = create.TransactionDate,
+                NewRecipints = create.NewRecipints, FileName = create.FileName,TransactionHijriDate = create.TransactionHijriDate,
                 Items = create.Items
             };
             var result = await _mediator.Send(transferCustoday);
@@ -72,11 +70,11 @@ namespace Inventory.Mostafa.Pl.Controllers
 
             return Ok(new ApiResponse<Result<string>>(true, 200, "File Uploaded Successfully", result));
         }
-        [HttpPut("transfer/attachment")]
+        [HttpPut("transfer/{id}")]
         [Authorize(AuthenticationSchemes = "Bearer", Roles = "Admin,User")]
-        public async Task<ActionResult<Result<string>>> UpdateAttachment(int id,IFormFile file)
+        public async Task<ActionResult<Result<string>>> UpdateAttachment(int id,UpdateTransferDto updateTransfer)
         {
-            var fileCommand = new UpdateFileCommand() { Id = id,File = file };
+            var fileCommand = new UpdateTransferCommand() { Id = id,File = updateTransfer.File,HijriDate = updateTransfer.HijriDate};
             var result = await _mediator.Send(fileCommand);
             if (result == null) return BadRequest(new ErrorResponse(400, result.Message));
 

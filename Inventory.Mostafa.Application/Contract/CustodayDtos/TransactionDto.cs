@@ -16,6 +16,7 @@ namespace Inventory.Mostafa.Application.Contract.CustodayDtos
         public string? ItemName { get; set; }
         public int? Quantity { get; set; }
         public DateOnly? TransactionDate { get; set; }
+        public string TransactionHijriDate { get; set; }
         public string? DocumentPath { get; set; }
     }
 }

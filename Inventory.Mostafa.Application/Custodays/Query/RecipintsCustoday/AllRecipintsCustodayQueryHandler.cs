@@ -21,43 +21,73 @@ namespace Inventory.Mostafa.Application.Custodays.Query.RecipintsCustoday
             //if (request.UnitId == 0 || request.UnitId == null || request.RecipintsId == 0 || request.RecipintsId == null) return Result<IEnumerable<RecipintsCustodayDto>>.Failure("Please Enter A Valid Data.");
 
 
-            Custoday custoday = new();
+            List<Custoday> custodays = new List<Custoday>();
 
             if (request.UnitId != null && request.UnitId != 0)
             {
                 var unitCustodaySpec = new CustodaySpec(request.UnitId, true);
-                custoday = await _unitOfWork.Repository<Custoday, int>().GetWithSpecAsync(unitCustodaySpec);
-                if (custoday == null) return Result<IEnumerable<RecipintsCustodayDto>>.Failure("There Is No Custoday For This Unit.");
+                custodays = (List<Custoday>)await _unitOfWork.Repository<Custoday, int>().GetAllWithSpecAsync(unitCustodaySpec);
+
+                if (custodays == null)
+                    return Result<IEnumerable<RecipintsCustodayDto>>.Failure("There Is No Custodys For This Unit.");
             }
             else
             {
                 var recipintsCustodaySpec = new CustodaySpec(request.RecipintsId);
-                custoday = await _unitOfWork.Repository<Custoday, int>().GetWithSpecAsync(recipintsCustodaySpec);
-                if (custoday == null) Result<IEnumerable<RecipintsCustodayDto>>.Failure("There Is No Custoday For This Recipints.");
-            }   
+                var custoday = await _unitOfWork.Repository<Custoday, int>().GetWithSpecAsync(recipintsCustodaySpec);
 
-            var returnSpec = new ReturnSpec(request.RecipintsId,true,true);
-            var recipintsReturns = await _unitOfWork.Repository<Returns, int>().GetAllWithSpecAsync(returnSpec);
+                if (custoday == null)
+                    return Result<IEnumerable<RecipintsCustodayDto>>.Failure("There Is No Custody For This Recipient.");
 
-            var recipintsCustodayDto = custoday.CustodyItems.Select(i =>
+                custodays.Add(custoday);
+            }
+
+            // 🔹 Get all returns WITH ReturnItems
+            List<Returns> recipintsReturnsDetails = new List<Returns>();
+            if (request.UnitId != null && request.UnitId != 0)
             {
-                // Filter all returns related to this item
-                //var itemReturns = recipintsReturns?.Where(r => r.ItemId == i.ItemId).ToList();
+                var returnSpec = new ReturnSpec(request.UnitId, true);
+                var recipintsReturns = await _unitOfWork.Repository<Returns, int>().GetAllWithSpecAsync(returnSpec);
+                recipintsReturnsDetails = (List<Returns>)recipintsReturns;
+            }
+            else
+            {
+                var returnSpec = new ReturnSpec(request.RecipintsId, true, true);
+                var recipintsReturns = await _unitOfWork.Repository<Returns, int>().GetAllWithSpecAsync(returnSpec);
+                recipintsReturnsDetails = (List<Returns>)recipintsReturns;
+            }
 
-              //  var totalReturned = itemReturns?.Sum(r => r.Quantity ?? 0) ?? 0;
-              //  var totalWriteOff = itemReturns?.Sum(r => r.WriteOfQuantity) ?? 0;
+            // Flatten ReturnItems
+            var allReturnItems = recipintsReturnsDetails
+                .SelectMany(r => r.ReturnItems ?? Enumerable.Empty<ReturnItem>())
+                .ToList();
 
-                return new RecipintsCustodayDto
+                var result = custodays.SelectMany(c => c.CustodyItems.Select(custodyItem =>
                 {
-                    ItemName = i.Item?.ItemsName,
-                    //OriginalQuantity = i.Quantity + totalReturned + totalWriteOff,
-                    //ReturnedQuantity = totalReturned + totalWriteOff,
-                    RemainingQuantity = i.Quantity
-                };
-            });
+                    // 🔹 Returned Quantity
+                    var returnedQuantity = allReturnItems
+                        .Where(ri => ri.ItemId == custodyItem.ItemId)
+                        .Sum(ri => ri.Quantity);
 
-            return Result<IEnumerable<RecipintsCustodayDto>>.Success(recipintsCustodayDto, "All Recipints Custoday Retrived Successfully");
+                    // 🔹 Original Quantity
+                    var originalQuantity = custodyItem.Quantity + returnedQuantity;
 
+                    return new RecipintsCustodayDto
+                    {
+                        ItemName = custodyItem.Item?.ItemsName,
+                        OriginalQuantity = originalQuantity,
+                        ReturnedQuantity = returnedQuantity,
+                        RemainingQuantity = custodyItem.Quantity
+                    };
+                })).Where(x =>
+                        x.OriginalQuantity > 0 ||
+                        x.ReturnedQuantity > 0 ||
+                        x.RemainingQuantity > 0
+                ); ;
+
+                return Result<IEnumerable<RecipintsCustodayDto>>
+                    .Success(result, "All Recipients Custody Retrieved Successfully");
         }
+        
     }
 }

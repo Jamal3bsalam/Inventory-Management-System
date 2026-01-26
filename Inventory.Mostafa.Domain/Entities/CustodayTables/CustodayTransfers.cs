@@ -25,7 +25,8 @@ namespace Inventory.Mostafa.Domain.Entities.CustodayTables
         public Recipients? NewRecipient { get; set; }
 
         public int Quantity { get; set; }
-        public DateOnly TransactionDate { get; set; }
+        public DateOnly TransactionDate { get; set; } = DateOnly.FromDateTime(DateTime.Today);
+        public string TransactionHijriDate { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public string? DocumentPath { get; set; }
     }

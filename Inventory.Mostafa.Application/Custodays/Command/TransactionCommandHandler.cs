@@ -110,7 +110,7 @@ namespace Inventory.Mostafa.Application.Custodays.Command
 
                         }
 
-                    newCustody.TransactionDate = request.TransactionDate;
+                    newCustody.TransactionDate = DateOnly.FromDateTime(DateTime.Today);
                     newCustody.DocumentPath = request.FileName != null ? $"\\Files\\CustodayTransfers\\{request.FileName}" : null;
                     _unitOfWork.Repository<Custoday, int>().Update(newCustody);
                     // ✅ Step 4: تحديث المصروفات الخاصة بالعناصر المنقولة فقط
@@ -127,7 +127,8 @@ namespace Inventory.Mostafa.Application.Custodays.Command
                             ItemName = i.Item.ItemsName,
                             Quantity = i.Quantity
                         }).ToList(),
-                        TransactionDate = request.TransactionDate,
+                        TransactionDate = newCustody.TransactionDate,
+                        TransactionHijriDate = request.TransactionHijriDate,
                         DocumentPath = newCustody.DocumentPath != null? _configuration["BASEURL"] + newCustody.DocumentPath : null
                     };
 
@@ -143,7 +144,7 @@ namespace Inventory.Mostafa.Application.Custodays.Command
                         OldRecipientId = oldCustody.RecipientsId,
                         NewRecipientId = newCustody.RecipientsId,
                         Quantity = transfer.Quantity,
-                        TransactionDate = request.TransactionDate,
+                        TransactionHijriDate = request.TransactionHijriDate,
                         DocumentPath = newCustody.DocumentPath,
                     };
                     await _unitOfWork.Repository<CustodayTransfers, int>().AddAsync(transferRecord);
