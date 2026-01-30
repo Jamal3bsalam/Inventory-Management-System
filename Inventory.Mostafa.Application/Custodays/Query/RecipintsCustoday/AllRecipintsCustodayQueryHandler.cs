@@ -62,7 +62,8 @@ namespace Inventory.Mostafa.Application.Custodays.Query.RecipintsCustoday
                 .SelectMany(r => r.ReturnItems ?? Enumerable.Empty<ReturnItem>())
                 .ToList();
 
-                var result = custodays.SelectMany(c => c.CustodyItems.Select(custodyItem =>
+
+            var result = custodays.SelectMany(c => c.CustodyItems.Where(ci => ci.IsDeleted == false).Select(custodyItem =>
                 {
                     // 🔹 Returned Quantity
                     var returnedQuantity = allReturnItems
@@ -85,7 +86,7 @@ namespace Inventory.Mostafa.Application.Custodays.Query.RecipintsCustoday
                         x.RemainingQuantity > 0
                 ); ;
 
-                return Result<IEnumerable<RecipintsCustodayDto>>
+            return Result<IEnumerable<RecipintsCustodayDto>>
                     .Success(result, "All Recipients Custody Retrieved Successfully");
         }
         
