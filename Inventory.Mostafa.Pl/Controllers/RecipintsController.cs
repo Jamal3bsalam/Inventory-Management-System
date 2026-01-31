@@ -43,13 +43,13 @@ namespace Inventory.Mostafa.Pl.Controllers
 
         [HttpPost]
         [Authorize(AuthenticationSchemes = "Bearer", Roles = "Admin,User")]
-        public async Task<ActionResult<ApiResponse<string>>> AddNewRecipints(int unitId , string recipintsName)
+        public async Task<ActionResult<ApiResponse<RecipintsDto>>> AddNewRecipints(int unitId , string recipintsName)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
             var unitCommand = new AddNewRecipintsCommand() { UnitId = unitId,RecipintsName = recipintsName};
             var result = await _mediator.Send(unitCommand);
 
-            return Ok(new ApiResponse<string>(true, 200, result.Message, result.Data));
+            return Ok(new ApiResponse<RecipintsDto>(true, 200, result.Message, result.Data));
         }
 
         [HttpGet]
