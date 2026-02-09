@@ -72,7 +72,7 @@ namespace Inventory.Mostafa.Application.Return.Command.Add
                     .GetAllWithSpecAsync(expenseItemsSpec);
 
                 var selectedItem = expenseItems
-                    .FirstOrDefault(i => i.ItemId == returnItem.ItemId);
+                    .FirstOrDefault(i => i.ItemId == returnItem.ItemId && i.Quantity != 0);
 
                 if (selectedItem == null)
                     return Result<ReturnDto>.Failure("Item not found in UnitExpense");

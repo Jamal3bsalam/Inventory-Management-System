@@ -26,7 +26,9 @@ namespace Inventory.Mostafa.Application.Custodays.Query.RecipintsCustoday
             if (request.UnitId != null && request.UnitId != 0)
             {
                 var unitCustodaySpec = new CustodaySpec(request.UnitId, true);
-                custodays = (List<Custoday>)await _unitOfWork.Repository<Custoday, int>().GetAllWithSpecAsync(unitCustodaySpec);
+                var custodaysDb = await _unitOfWork.Repository<Custoday, int>().GetAllWithSpecAsync(unitCustodaySpec);
+
+                custodays.AddRange(custodaysDb);
 
                 if (custodays == null)
                     return Result<IEnumerable<RecipintsCustodayDto>>.Failure("There Is No Custodys For This Unit.");
@@ -63,31 +65,43 @@ namespace Inventory.Mostafa.Application.Custodays.Query.RecipintsCustoday
                 .ToList();
 
 
-            var result = custodays.SelectMany(c => c.CustodyItems.Where(ci => ci.IsDeleted == false).Select(custodyItem =>
+            var resultDto = new List<RecipintsCustodayDto>();
+
+            foreach (var custody in custodays)
+            {
+                if (request.RecipintsId != null && request.RecipintsId != 0)
                 {
-                    // 🔹 Returned Quantity
-                    var returnedQuantity = allReturnItems
-                        .Where(ri => ri.ItemId == custodyItem.ItemId)
-                        .Sum(ri => ri.Quantity);
+                    if (custody.CustodyItems == null || !custody.CustodyItems.Any())
+                        return Result<IEnumerable<RecipintsCustodayDto>>.Failure("There Is No Custody Items For This Recipient.");
+                }
 
-                    // 🔹 Original Quantity
-                    var originalQuantity = custodyItem.Quantity + returnedQuantity;
-
-                    return new RecipintsCustodayDto
+                if (request.UnitId != null && request.UnitId != 0)
+                {
+                    if (custody.CustodyItems == null || !custody.CustodyItems.Any())
+                        return Result<IEnumerable<RecipintsCustodayDto>>.Failure("There Is No Custody Items For This Unit.");
+                }
+                    foreach (var custodyItem in custody.CustodyItems.Where(ci => ci.IsDeleted == false))
                     {
-                        ItemName = custodyItem.Item?.ItemsName,
-                        OriginalQuantity = originalQuantity,
-                        ReturnedQuantity = returnedQuantity,
-                        RemainingQuantity = custodyItem.Quantity
-                    };
-                })).Where(x =>
-                        x.OriginalQuantity > 0 ||
-                        x.ReturnedQuantity > 0 ||
-                        x.RemainingQuantity > 0
-                ); ;
+                      // 🔹 Returned Quantity
+                      var returnedQuantity = allReturnItems
+                          .Where(ri => ri.ItemId == custodyItem.ItemId &&
+                                 ri.Return?.RecipientsId == custody.RecipientsId)
+                          .Sum(ri => ri.Quantity);
+                      // 🔹 Original Quantity
+                      var originalQuantity = custodyItem.Quantity + returnedQuantity;
+                      resultDto.Add(new RecipintsCustodayDto
+                      {
+                          ItemName = custodyItem.Item?.ItemsName,
+                          OriginalQuantity = originalQuantity,
+                          ReturnedQuantity = returnedQuantity,
+                          RemainingQuantity = custodyItem.Quantity
+                      });
+                    }
+                
+            }
 
             return Result<IEnumerable<RecipintsCustodayDto>>
-                    .Success(result, "All Recipients Custody Retrieved Successfully");
+                    .Success(resultDto, "All Recipients Custody Retrieved Successfully");
         }
         
     }

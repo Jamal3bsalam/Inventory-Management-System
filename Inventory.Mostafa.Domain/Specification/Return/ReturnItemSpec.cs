@@ -13,6 +13,7 @@ namespace Inventory.Mostafa.Domain.Specification.Return
         {
             Include.Add(r => r.UnitExpense);
             Include.Add(r => r.Item);
+            Include.Add(r => r.Return);
         }
     }
 }
