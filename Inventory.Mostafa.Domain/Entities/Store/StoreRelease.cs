@@ -15,6 +15,7 @@ namespace Inventory.Mostafa.Domain.Entities.Store
         public string? DocumentNumber { get; set; } = string.Empty;
         public string? DocumentPath { get; set; }
         public DateOnly ReleaseDate { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public bool IsDeleted { get; set; }
         public DateTime? DeletedAt { get; set; }
 

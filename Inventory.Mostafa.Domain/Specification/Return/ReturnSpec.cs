@@ -27,6 +27,8 @@ namespace Inventory.Mostafa.Domain.Specification.Return
                 ApplyPagination((int)(parameter.PageSize * (parameter.PageIndex - 1)), (int)parameter.PageSize);
             }
             ApplyInclude();
+            AddOrderByDesc(r => r.CreatedAt);
+
         }
 
         public ReturnSpec(StoreReleaseSpecParameter parameter,bool flag) : base(S => S.IsDeleted != true && S.UnitId == parameter.UnitId)
@@ -36,7 +38,9 @@ namespace Inventory.Mostafa.Domain.Specification.Return
             {
                 ApplyPagination((int)(parameter.PageSize * (parameter.PageIndex - 1)), (int)parameter.PageSize);
             }
+
             ApplyInclude();
+            AddOrderByDesc(r => r.CreatedAt);
         }
 
         public ReturnSpec() : base(S => S.IsDeleted == true)

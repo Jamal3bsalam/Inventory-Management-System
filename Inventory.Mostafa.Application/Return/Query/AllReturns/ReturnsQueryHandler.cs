@@ -41,7 +41,7 @@ namespace Inventory.Mostafa.Application.Return.Query.AllReturns
             
 
             if (returns == null) return Result<Pagination<IEnumerable<AllReturnDto>>>.Failure("Faild To Retrived All Returns.");
-
+            
 
             var returnsDto = returns.Select(r => new AllReturnDto()
             {

@@ -17,6 +17,7 @@ namespace Inventory.Mostafa.Domain.Entities.UnitEx
         public string? AttachmentUrl { get; set; }
         public string? DocumentNumber { get; set; }
         public DateOnly? ExpenseDate { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public bool? IsDeleted { get; set; }
         public DateTime DeletedAt { get; set; }
         public Unit? Unit { get; set; }

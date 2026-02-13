@@ -12,6 +12,7 @@ namespace Inventory.Mostafa.Domain.Entities.AssetsReturns
         public int? RecipientsId { get; set; }
         public string? DocumentPath { get; set; }
         public string? Reason { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public bool? IsDeleted { get; set; }
         public DateTime? DeletedAt { get; set; }
         public Unit? Unit { get; set; }

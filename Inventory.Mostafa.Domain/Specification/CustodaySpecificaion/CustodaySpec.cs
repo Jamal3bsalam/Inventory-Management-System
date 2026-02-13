@@ -18,7 +18,11 @@ namespace Inventory.Mostafa.Domain.Specification.CustodaySpecificaion
         public CustodaySpec(int unitId,bool flag) : base(c => c.UnitId == unitId)
         {
             ApplyInclude();
-            
+        }
+
+        public CustodaySpec(int recipintsId, bool flag1,bool flag2,bool flag3) : base(c => c.RecipientsId == recipintsId)
+        {
+            ApplyInclude();
         }
 
         public CustodaySpec(int custodyId,bool flag1,bool flag2) : base(C => C.Id == custodyId)

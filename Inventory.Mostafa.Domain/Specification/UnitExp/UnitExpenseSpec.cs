@@ -20,6 +20,7 @@ namespace Inventory.Mostafa.Domain.Specification.UnitExp
 
         public UnitExpenseSpec(int recipintsId,bool flag1,bool flag2) : base(i => i.RecipientsId == recipintsId)
         {
+            AddOrderByDesc(r => r.CreatedAt);
             ApplyInclude();
         }
 
@@ -32,6 +33,7 @@ namespace Inventory.Mostafa.Domain.Specification.UnitExp
 
         public UnitExpenseSpec(int UnitId, int RecipintsId) : base(i => i.UnitId == UnitId && i.RecipientsId == RecipintsId)
         {
+            AddOrderByDesc(r => r.CreatedAt);
             ApplyInclude();
         }
 
@@ -43,6 +45,7 @@ namespace Inventory.Mostafa.Domain.Specification.UnitExp
             {
                 ApplyPagination((int)(parameter.PageSize * (parameter.PageIndex - 1)), (int)parameter.PageSize);
             }
+            AddOrderByDesc(r => r.CreatedAt);
             ApplyInclude();
         }
 
@@ -53,11 +56,13 @@ namespace Inventory.Mostafa.Domain.Specification.UnitExp
             {
                 ApplyPagination((int)(parameter.PageSize * (parameter.PageIndex - 1)), (int)parameter.PageSize);
             }
+            AddOrderByDesc(r => r.CreatedAt);
             ApplyInclude();
         }
 
         public UnitExpenseSpec(int unitId,DateOnly startDate, DateOnly endDate) : base(u => u.UnitId == unitId && u.ExpenseDate >= startDate && u.ExpenseDate <= endDate && u.IsDeleted != true)
         {
+            AddOrderByDesc(r => r.CreatedAt);
             ApplyInclude();
         }
 

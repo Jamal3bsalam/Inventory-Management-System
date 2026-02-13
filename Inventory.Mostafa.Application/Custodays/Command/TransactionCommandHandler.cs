@@ -32,6 +32,9 @@ namespace Inventory.Mostafa.Application.Custodays.Command
 
                 foreach (var transfer in request.Items)
                 {
+
+                    if(request.NewRecipints == transfer.CurrentRecipints) return Result<List<CustodayDto>>.Failure("❌ المستلم الجديد لا يمكن أن يكون نفس المستلم القديم.");
+
                     // ✅ Step 1: احضر العهدة القديمة
                     var oldSpec = new CustodaySpec(transfer.CurrentRecipints);
                     var oldCustody = await _unitOfWork.Repository<Custoday, int>().GetWithSpecAsync(oldSpec);

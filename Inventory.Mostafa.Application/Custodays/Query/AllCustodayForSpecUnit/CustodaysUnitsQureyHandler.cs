@@ -22,14 +22,29 @@ namespace Inventory.Mostafa.Application.Custodays.Query.AllCustodayForSpecUnit
         }
         public async Task<Result<IEnumerable<CustodaysUnitsDto>>> Handle(CustodaysUnitsQurey request, CancellationToken cancellationToken)
         {
-            if (request.UnitId == null || request.UnitId == 0) return Result<IEnumerable<CustodaysUnitsDto>>.Failure("Please Enter A Valid Id");
+            if ((request.UnitId == null && request.RecipintId == null) || (request.UnitId <= 0 || request.RecipintId <= 0)) return Result<IEnumerable<CustodaysUnitsDto>>.Failure("Please Enter A Valid UnitId Or Recipints Id.");
 
-            var custodaySpec = new CustodaySpec(request.UnitId.Value,true);
-            var custodays = await _unitOfWork.Repository<Custoday,int>().GetAllWithSpecAsync(custodaySpec);
+            var custodayList = new List<Custoday>();
 
-            if (custodays == null) return Result<IEnumerable<CustodaysUnitsDto>>.Failure("Faild To Retrive All Custodays");
+            if (request.UnitId.HasValue) 
+            { 
+                var custodaySpec = new CustodaySpec(request.UnitId.Value, true);
+                var custodays = await _unitOfWork.Repository<Custoday, int>().GetAllWithSpecAsync(custodaySpec); 
+                if (custodays != null) 
+                    custodayList.AddRange(custodays);
+            }
 
-            var custodayDto = custodays.Select(c => new CustodaysUnitsDto()
+            if (request.RecipintId.HasValue) 
+            { 
+                var custodaySpec = new CustodaySpec(request.RecipintId.Value, false,false,true);
+                var custodays = await _unitOfWork.Repository<Custoday, int>().GetAllWithSpecAsync(custodaySpec); 
+                if (custodays != null) 
+                    custodayList.AddRange(custodays);
+            }
+    
+            if (custodayList == null) return Result<IEnumerable<CustodaysUnitsDto>>.Failure("No Custodays Found");
+
+            var custodayDto = custodayList.Select(c => new CustodaysUnitsDto()
             {
                 CustodayId = c.Id,
                 CurrentRecipintsId = c.RecipientsId,

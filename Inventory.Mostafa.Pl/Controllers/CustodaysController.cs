@@ -31,15 +31,13 @@ namespace Inventory.Mostafa.Pl.Controllers
             _mediator = mediator;
         }
 
-        [HttpGet("{id}")]
+        [HttpGet]
         [Authorize(AuthenticationSchemes = "Bearer", Roles = "Admin,User")]
         [Cashed(60)]
-        public async Task<ActionResult<ApiResponse<IEnumerable<CustodaysUnitsDto>>>> GetAllCustodaysForSpecificUnit(int id)
+        public async Task<ActionResult<ApiResponse<IEnumerable<CustodaysUnitsDto>>>> GetAllCustodaysForSpecificUnit([FromQuery] CustodaysUnitsQurey parameter)
         {
-            var getAllCustodays = new CustodaysUnitsQurey() { UnitId = id};
-            var result = await _mediator.Send(getAllCustodays);
+            var result = await _mediator.Send(parameter);
             if (result == null) return BadRequest(new ErrorResponse(400, result.Message));
-
 
             return Ok(new ApiResponse<IEnumerable<CustodaysUnitsDto>>(true, 200, result.Message, result.Data));
         }
