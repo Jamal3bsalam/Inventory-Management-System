@@ -7,13 +7,17 @@ using System.Threading.Tasks;
 
 namespace Inventory.Mostafa.Domain.Specification.Store
 {
-    public class StoreReleaseCountSpec:Specifications<StoreRelease,int>
+    public class StoreReleaseCountSpec : Specifications<StoreRelease, int>
     {
         public StoreReleaseCountSpec(StoreReleaseSpecParameter specParameter) : base(U => U.IsDeleted != true)
         {
         }
 
-        public StoreReleaseCountSpec(StoreReleaseSpecParameter specParameter,bool flag) : base(U => U.IsDeleted != true && U.UnitId == specParameter.UnitId)
+        public StoreReleaseCountSpec(StoreReleaseSpecParameter specParameter, bool flag) : base(U => U.IsDeleted != true && U.UnitId == specParameter.UnitId)
+        {
+        }
+
+        public StoreReleaseCountSpec(StoreReleaseItemParameters specParameter) : base(U => U.IsDeleted != true && U.UnitId == specParameter.UnitId)
         {
         }
     }

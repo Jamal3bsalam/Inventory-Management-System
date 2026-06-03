@@ -58,7 +58,7 @@ namespace Inventory.Mostafa.Pl.Controllers
         {
             var getAllRecipints = new SearchQuery() { Search = search };
             var result = await _mediator.Send(getAllRecipints);
-            if (result == null) return BadRequest(new ErrorResponse(400, "Faild To Retrive Recipints By This Name"));
+            if (result.Data == null) return BadRequest(new ErrorResponse(400, result.Message));
 
             return Ok(new ApiResponse<IEnumerable<RecipintsDtos>>(true, 200, result.Message, result.Data));
         }

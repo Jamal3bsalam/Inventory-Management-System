@@ -27,7 +27,7 @@ namespace Inventory.Mostafa.Application.Units.Query.RecipintsSearch
             var spec = new RecipintsSpec(request.Search);
             var recipints = await _unitOfWork.Repository<Recipients,int>().GetAllWithSpecAsync(spec);
 
-            if(recipints == null) return Result<IEnumerable<RecipintsDtos>>.Failure("No Recipints With This Name.");
+            if(!recipints.Any()) return Result<IEnumerable<RecipintsDtos>>.Failure("No Recipints With This Name.");
 
             var recipintsDto = recipints.Select(R => new RecipintsDtos()
             {
@@ -35,7 +35,7 @@ namespace Inventory.Mostafa.Application.Units.Query.RecipintsSearch
                 Name = R.Name,
                 UnitName = R.Unit?.UnitName
             });
-
+            
             return Result<IEnumerable<RecipintsDtos>>.Success(recipintsDto, "Recipints Retrived Successfully");
 
         }

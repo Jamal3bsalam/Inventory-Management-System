@@ -10,6 +10,7 @@ namespace Inventory.Mostafa.Application.Contract.Store
     {
         public int Id { get; set; }
         public string? ItemName { get; set; }
+        public int? ItemId { get; set; }
         public int? OrderId { get; set; }
         public string? OrderNumber { get; set; }
         public string? OrderType { get; set; }

@@ -134,7 +134,21 @@ namespace Inventory.Mostafa.Application.Return.Command.Add
 
             await _unitOfWork.Repository<Returns, int>().AddAsync(returns);
 
+            var recipintsCustoday = await _unitOfWork.Repository<Custoday, int>().GetWithSpecAsync(new CustodaySpec(request.RecipintsId.Value));
             var result = await _unitOfWork.CompleteAsync();
+
+            if (recipintsCustoday != null)
+            {
+                if (!recipintsCustoday.CustodyItems.Any())
+                {
+                    recipints.IsDeleted = true;
+                    recipints.DeletedAt = DateTime.UtcNow;
+
+                    _unitOfWork.Repository<Recipients, int>().Update(recipints);
+                    await _unitOfWork.CompleteAsync();
+                }
+            }
+
             if (result <= 0) return Result<ReturnDto>.Failure("Failed to create return");
 
             var returnDto = new ReturnDto

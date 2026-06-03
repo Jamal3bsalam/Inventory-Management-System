@@ -9,6 +9,7 @@ using Inventory.Mostafa.Application.Store.Command.Add.File;
 using Inventory.Mostafa.Application.Store.Command.Delete;
 using Inventory.Mostafa.Application.Store.Command.Update;
 using Inventory.Mostafa.Application.Store.Command.Update.File;
+using Inventory.Mostafa.Application.Store.Query.AllForSpecItem;
 using Inventory.Mostafa.Application.Store.Query.AllStoreRelease;
 using Inventory.Mostafa.Application.Store.Query.Search;
 using Inventory.Mostafa.Application.UnitExp.Command.Update;
@@ -44,6 +45,17 @@ namespace Inventory.Mostafa.Pl.Controllers
         public async Task<ActionResult<ApiResponse<Pagination<IEnumerable<StoreReleaseDto>>>>> GetAllStoreReleases([FromQuery] StoreReleaseSpecParameter parameter)
         {
             var getAllStoreReleasesQuery = parameter.Adapt<StoreReleasesQuery>();
+            var Releases = await _mediator.Send(getAllStoreReleasesQuery);
+            if (Releases == null) return BadRequest(new ErrorResponse(400, "Faild To Retrive All Store Releases"));
+            return Ok(new ApiResponse<Pagination<IEnumerable<StoreReleaseDto>>>(true, 200, "StoreRelease Retrived Successfully.", Releases.Data));
+        }
+
+        [HttpGet("Item/Id")]
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = "Admin,User")]
+        [Cashed(60)]
+        public async Task<ActionResult<ApiResponse<Pagination<IEnumerable<StoreReleaseDto>>>>> GetAllStoreReleasesWithItemId([FromQuery] StoreReleaseItemParameters parameter)
+        {
+            var getAllStoreReleasesQuery = parameter.Adapt<AllStoreForItemQuery>();
             var Releases = await _mediator.Send(getAllStoreReleasesQuery);
             if (Releases == null) return BadRequest(new ErrorResponse(400, "Faild To Retrive All Store Releases"));
             return Ok(new ApiResponse<Pagination<IEnumerable<StoreReleaseDto>>>(true, 200, "StoreRelease Retrived Successfully.", Releases.Data));

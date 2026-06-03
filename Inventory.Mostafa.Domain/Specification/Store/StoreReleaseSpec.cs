@@ -25,7 +25,17 @@ namespace Inventory.Mostafa.Domain.Specification.Store
             ApplyInclude();
         }
 
-        public StoreReleaseSpec(StoreReleaseSpecParameter parameter,bool flag) : base(S => S.IsDeleted != true && S.UnitId == parameter.UnitId)
+        public StoreReleaseSpec(StoreReleaseSpecParameter parameter, bool flag) : base(S => S.IsDeleted != true && S.UnitId == parameter.UnitId)
+        {
+
+            if (parameter.PageIndex.HasValue && parameter.PageSize.HasValue)
+            {
+                ApplyPagination((int)(parameter.PageSize * (parameter.PageIndex - 1)), (int)parameter.PageSize);
+            }
+            ApplyInclude();
+        }
+
+        public StoreReleaseSpec(StoreReleaseItemParameters parameter) : base(S => S.IsDeleted != true && S.UnitId == parameter.UnitId)
         {
 
             if (parameter.PageIndex.HasValue && parameter.PageSize.HasValue)
